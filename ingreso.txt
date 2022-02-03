@@ -1,0 +1,8 @@
+Cedula: uno
+Primer nombre: dos
+Segundo nombre: tres
+Primer apellido: cuatro
+Segundo apellido: cinco
+Telefono: seis
+Direccion: siete
+Correo electronico: ocho
