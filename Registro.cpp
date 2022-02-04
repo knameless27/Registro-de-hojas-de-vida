@@ -11,9 +11,7 @@ using namespace std;
 class Registro
 {
 private:
-	string cedula;
-	string nombre;
-	string codigo;
+	string cedula, nombre1, nombre2, apellido1, apellido2, telefono, direccion, correo;
 
 public:
 	void ingresar();
@@ -39,7 +37,7 @@ void Registro::menu()
 		cout << "2. Retirar Datos Agenda" << endl;
 		cout << "3. Modificar Datos Agenda" << endl;
 		cout << "4. Listar Datos Agenda " << endl;
-		cout << "0. Salir del Menu" << endl
+		cout << "5. Salir del Menu" << endl
 			 << endl;
 		cout << "Digite Opcion :  ";
 		cin >> opc;
@@ -59,6 +57,10 @@ void Registro::menu()
 		case 4:
 			listar();
 			break;
+		case 5:
+			opc=0;
+			system(CLEAR);
+			break;
 		default:
 			cout << "Ingreso Opcion no valida ";
 		}
@@ -68,14 +70,13 @@ void Registro::menu()
 void Registro::ingresar()
 {
 	fstream arIngreso("ingreso.txt");
-	string cedula, nombre1, nombre2, apellido1, apellido2, telefono, direccion, correo;
 	int op2;
 
 	if (!arIngreso.is_open())
 	{
 		arIngreso.open("ingreso.txt", ios::out);
 	}
-	
+
 	cout << "\nCedula: ";
 	getline(cin, cedula);
 	cout << "\nPrimer nombre: ";
@@ -94,22 +95,23 @@ void Registro::ingresar()
 	getline(cin, correo);
 
 	system(CLEAR);
-	cout<<"\n1. Guardar registro \n2. Regresar\n"<<endl;
-	cout<<"\nDigite una opcion: ";
-	cin>>op2;
+	cout << "\n1. Guardar registro \n2. Regresar\n"
+		 << endl;
+	cout << "\nDigite una opcion: ";
+	cin >> op2;
 
-	if (op2==1)
+	if (op2 == 1)
 	{
-		arIngreso << "Cedula: " << cedula<<endl;
-		arIngreso << "Primer nombre: " << nombre1<<endl;
-		arIngreso << "Segundo nombre: " << nombre2<<endl;
-		arIngreso << "Primer apellido: " << apellido1<<endl;
-		arIngreso << "Segundo apellido: " << apellido2<<endl;
-		arIngreso << "Telefono: " << telefono<<endl;
-		arIngreso << "Direccion: " << direccion<<endl;
-		arIngreso << "Correo electronico: " << correo<<endl;
+		arIngreso << "Cedula: " << cedula << endl;
+		arIngreso << "Primer nombre: " << nombre1 << endl;
+		arIngreso << "Segundo nombre: " << nombre2 << endl;
+		arIngreso << "Primer apellido: " << apellido1 << endl;
+		arIngreso << "Segundo apellido: " << apellido2 << endl;
+		arIngreso << "Telefono: " << telefono << endl;
+		arIngreso << "Direccion: " << direccion << endl;
+		arIngreso << "Correo electronico: " << correo << endl;
 
-		cout<<"\nRegistro guardado con exito!\n";
+		cout << "\nRegistro guardado con exito!\n";
 		system("pause");
 		system(CLEAR);
 	}
@@ -118,17 +120,71 @@ void Registro::ingresar()
 
 void Registro::retirar()
 {
-	cout << "chamaco pendejo";
+	system("cls");
+
+	fstream arRetirar("ingreso.txt");
+	arRetirar.open("ingreso.txt");
+	arRetirar >> cedula;
+	arRetirar >> nombre1;
+	arRetirar >> nombre2;
+	arRetirar >> apellido1;
+	arRetirar >> apellido2;
+	arRetirar >> telefono;
+	arRetirar >> direccion;
+	arRetirar >> correo;
+
+	arRetirar.close();
 }
 
 void Registro::modificar()
 {
-	cout << "chamaco pendejo";
+	system("cls");
+
+	fstream arModif("ingreso.txt");
+	arModif.open("ingreso.txt");
+	arModif >> cedula;
+	arModif >> nombre1;
+	arModif >> nombre2;
+	arModif >> apellido1;
+	arModif >> apellido2;
+	arModif >> telefono;
+	arModif >> direccion;
+	arModif >> correo;
+
+	arModif.close();
 }
 
 void Registro::listar()
 {
-	cout << "chamaco pendejo";
+	system("cls");
+
+	fstream arListar("ingreso.txt");
+	arListar.open("ingreso.txt");
+	arListar >> cedula;
+	arListar >> nombre1;
+	arListar >> nombre2;
+	arListar >> apellido1;
+	arListar >> apellido2;
+	arListar >> telefono;
+	arListar >> direccion;
+	arListar >> correo;
+
+	if (!arListar.eof())
+	{
+		cout << "----------------------------" << endl;
+		cout << "Primer nombre: " << nombre1 << endl;
+		cout << "Segundo nombre: " << nombre2 << endl;
+		cout << "Primer apellido: " << apellido1 << endl;
+		cout << "Segundo apellido: " << apellido2 << endl;
+		cout << "Direccion: " << direccion << endl;
+		cout << "Correo: " << correo << endl;
+		cout << "Telefono: " << telefono << endl;
+		cout << "Cedula: " << cedula << endl;
+		cout << "----------------------------" << endl;
+		cout << endl;
+		system("pause");
+	}
+	arListar.close();
 }
 
 void pausa()

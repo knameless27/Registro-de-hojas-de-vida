@@ -1,8 +1,10 @@
-Cedula: uno
-Primer nombre: dos
-Segundo nombre: tres
-Primer apellido: cuatro
-Segundo apellido: cinco
-Telefono: seis
-Direccion: siete
-Correo electronico: ocho
+Cedula: 1
+Primer nombre: 2
+Segundo nombre: 3
+Primer apellido: 4
+Segundo apellido: 5
+Telefono: 6
+Direccion: 7
+Correo electronico: 8
+ion: cll 13 # 12 48
+Correo electronico: knameless@gmail.com
