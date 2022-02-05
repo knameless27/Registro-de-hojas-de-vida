@@ -58,7 +58,7 @@ void Registro::menu()
 			listar();
 			break;
 		case 5:
-			opc=0;
+			opc = 0;
 			system(CLEAR);
 			break;
 		default:
@@ -74,25 +74,26 @@ void Registro::ingresar()
 
 	if (!arIngreso.is_open())
 	{
-		arIngreso.open("ingreso.txt", ios::out);
+		arIngreso.open("ingreso.txt", ios::out | ios::app); // el app, es pa que lo cree si no existe
 	}
 
+	system(CLEAR);
 	cout << "\nCedula: ";
-	getline(cin, cedula);
+	cin >> cedula;
 	cout << "\nPrimer nombre: ";
-	getline(cin, nombre1);
+	cin >> nombre1;
 	cout << "\nSegundo nombre: ";
-	getline(cin, nombre2);
+	cin >> nombre2;
 	cout << "\nPrimer apellido: ";
-	getline(cin, apellido1);
+	cin >> apellido1;
 	cout << "\nSegundo apellido: ";
-	getline(cin, apellido2);
+	cin >> apellido2;
 	cout << "\nTelefono: ";
-	getline(cin, telefono);
+	cin >> telefono;
 	cout << "\nDireccion: ";
-	getline(cin, direccion);
+	cin >> direccion;
 	cout << "\nCorreo electronico: ";
-	getline(cin, correo);
+	cin >> correo;
 
 	system(CLEAR);
 	cout << "\n1. Guardar registro \n2. Regresar\n"
@@ -102,14 +103,7 @@ void Registro::ingresar()
 
 	if (op2 == 1)
 	{
-		arIngreso << "Cedula: " << cedula << endl;
-		arIngreso << "Primer nombre: " << nombre1 << endl;
-		arIngreso << "Segundo nombre: " << nombre2 << endl;
-		arIngreso << "Primer apellido: " << apellido1 << endl;
-		arIngreso << "Segundo apellido: " << apellido2 << endl;
-		arIngreso << "Telefono: " << telefono << endl;
-		arIngreso << "Direccion: " << direccion << endl;
-		arIngreso << "Correo electronico: " << correo << endl;
+		arIngreso << " " << cedula << " " << nombre1 << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << endl;
 
 		cout << "\nRegistro guardado con exito!\n";
 		system("pause");
@@ -122,16 +116,104 @@ void Registro::retirar()
 {
 	system("cls");
 
+	string key = "";
+	bool encontrado = false;
+	int opc = 1;
+
 	fstream arRetirar("ingreso.txt");
-	arRetirar.open("ingreso.txt");
-	arRetirar >> cedula;
-	arRetirar >> nombre1;
-	arRetirar >> nombre2;
-	arRetirar >> apellido1;
-	arRetirar >> apellido2;
-	arRetirar >> telefono;
-	arRetirar >> direccion;
-	arRetirar >> correo;
+	ofstream tempo("auxiliar.txt");
+
+	do
+	{
+		system(CLEAR);
+		cout << "\n Elija el dato a retirar" << endl
+			 << endl;
+		cout << "1. Cedula" << endl;
+		cout << "2. Primer nombre" << endl;
+		cout << "3. Segundo nombre" << endl;
+		cout << "4. Primer apellido " << endl;
+		cout << "5. Segundo apellido " << endl;
+		cout << "6. Telefono " << endl;
+		cout << "7. Direccion " << endl;
+		cout << "8. Correo" << endl;
+		cout << "9. Salir del Menu" << endl
+			 << endl;
+		cout << "Digite Opcion :  ";
+		cin >> opc;
+		fflush(stdin);
+
+		switch (opc)
+		{
+		case 1:
+			system("cls");
+			arRetirar.open("ingreso.txt");
+			tempo.open("auxiliar.txt");
+			arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
+			fflush(stdin);
+
+			cout << "Ingrese clave a eliminar" << endl;
+			cin >> key;
+			if (!arRetirar.eof())
+			{
+				arRetirar >> cedula;
+				if (cedula == key)
+				{
+					encontrado = true;
+					cout << "Cedula:	" << cedula << endl;
+					cout << "Cedula eliminada exitosamente!" << endl;
+					system("pause");
+				}
+				else
+				{
+					tempo << nombre1 << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << " " << cedula << endl;
+				}
+				arRetirar >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
+				arRetirar << "Primer nombre: " << nombre1 << endl;
+				arRetirar << "Segundo nombre: " << nombre2 << endl;
+				arRetirar << "Primer apellido: " << apellido1 << endl;
+				arRetirar << "Segundo apellido: " << apellido2 << endl;
+				arRetirar << "Telefono: " << telefono << endl;
+				arRetirar << "Direccion: " << direccion << endl;
+				arRetirar << "Correo electronico: " << correo << endl;
+			}
+			if (encontrado == false)
+			{
+				cout << "Clave no encontrada" << endl;
+			}
+			arRetirar.close();
+			tempo.close();
+			remove("ingreso.txt");
+			rename("auxiliar.txt", "ingreso.txt");
+			break;
+		case 2:
+
+			break;
+		case 3:
+
+			break;
+		case 4:
+
+			break;
+		case 5:
+
+			break;
+		case 6:
+
+			break;
+		case 7:
+
+			break;
+		case 8:
+
+			break;
+		case 9:
+			opc = 0;
+			system(CLEAR);
+			break;
+		default:
+			cout << "Ingreso una opcion no valida! ";
+		}
+	} while (opc != 0);
 
 	arRetirar.close();
 }
@@ -140,9 +222,11 @@ void Registro::modificar()
 {
 	system("cls");
 
-	fstream arModif("ingreso.txt");
-	arModif.open("ingreso.txt");
-	arModif >> cedula;
+	fstream arModif("ingreso.txt");		   // creo la wea de fstream para modificar ingreso
+	arModif.open("ingreso.txt", ios::in);  // aqui la abro y le digo que la voy a usar solo para lectura
+	ofstream aux("auxiMod.txt", ios::out); // aqui abro y creo una variable ofstream para escritura
+
+	arModif >> cedula; // en todo esto agarro los datos de cedula, nombre y demas
 	arModif >> nombre1;
 	arModif >> nombre2;
 	arModif >> apellido1;
@@ -151,15 +235,50 @@ void Registro::modificar()
 	arModif >> direccion;
 	arModif >> correo;
 
-	arModif.close();
+	string cedaux; // declaro variables auxiliares
+	string cedaux2;
+
+	if (arModif.is_open())
+	{
+		cout << "cedula: ";
+		cin >> cedaux;
+		arModif >> cedula;
+		if (!arModif.eof())
+		{
+			arModif >> nombre1;
+			arModif >> apellido1;
+			arModif >> cedula;
+			if (cedula == cedaux)
+			{
+				cout << "la nueva cedula pa: ";
+				cin >> cedaux2;
+				aux << cedaux2 << " " << nombre1 << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << endl;
+			}
+			else
+			{
+				aux << nombre1 << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << endl;
+			}
+			arModif >> cedula;
+		}
+
+		arModif.close();
+		aux.close();
+	}
+	else
+	{
+		error;
+	}
+	remove("ingreso.txt");
+	rename("auxiMod.txt", "ingreso.txt");
 }
 
 void Registro::listar()
 {
 	system("cls");
 
-	fstream arListar("ingreso.txt");
-	arListar.open("ingreso.txt");
+	ifstream arListar("ingreso.txt");
+	arListar.open("ingreso.txt", ios::in);
+
 	arListar >> cedula;
 	arListar >> nombre1;
 	arListar >> nombre2;
@@ -172,33 +291,24 @@ void Registro::listar()
 	if (!arListar.eof())
 	{
 		cout << "----------------------------" << endl;
+		cout << "Cedula: " << cedula << endl;
 		cout << "Primer nombre: " << nombre1 << endl;
 		cout << "Segundo nombre: " << nombre2 << endl;
 		cout << "Primer apellido: " << apellido1 << endl;
 		cout << "Segundo apellido: " << apellido2 << endl;
+		cout << "Telefono: " << telefono << endl;
 		cout << "Direccion: " << direccion << endl;
 		cout << "Correo: " << correo << endl;
-		cout << "Telefono: " << telefono << endl;
-		cout << "Cedula: " << cedula << endl;
 		cout << "----------------------------" << endl;
 		cout << endl;
-		system("pause");
 	}
 	arListar.close();
-}
-
-void pausa()
-{
-	cout << "Presiona Enter para continuar...";
-	getch();
-	system(CLEAR);
+	system("pause");
 }
 
 void error()
 {
-	cout << "No se pudo abrir el archivo de registros, asegurese que el archivo se encuentre en\n";
-	cout << "la misma ubicaci\242n que el programa o que el archivo de texto se llame: \n";
-	cout << "clientes.txt, si el archivo tiene otro nombre ren\242mbrelo al ya mencionado\n\n";
+	cout << "Hubo un error chamaco pendejo\n";
 }
 
 int main()
