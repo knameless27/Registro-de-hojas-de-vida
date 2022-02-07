@@ -3,8 +3,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <string>
-
-#define CLEAR "cls"
+#include <cstdlib>
 
 using namespace std;
 
@@ -30,7 +29,7 @@ void Registro::menu()
 	int opc = 1;
 	do
 	{
-		system(CLEAR);
+		system("cls");
 		cout << "\n REGISTRO DE HOJAS DE VIDA" << endl
 			 << endl;
 		cout << "1. Ingresar Datos Agenda" << endl;
@@ -59,7 +58,7 @@ void Registro::menu()
 			break;
 		case 5:
 			opc = 0;
-			system(CLEAR);
+			system("cls");
 			break;
 		default:
 			cout << "Ingreso Opcion no valida ";
@@ -69,46 +68,49 @@ void Registro::menu()
 
 void Registro::ingresar()
 {
-	fstream arIngreso("ingreso.txt");
-	int op2;
+	ofstream arIngreso;
+	string aux_cedula;
+	string aux_nombre1;
+	string aux_nombre2;
+	string aux_apellido1;
+	string aux_apellido2;
+	string aux_telefono;
+	string aux_direccion;
+	string aux_correo;
 
-	if (!arIngreso.is_open())
+	arIngreso.open("ingreso.txt", ios::app);
+
+	if (arIngreso.is_open())
 	{
-		arIngreso.open("ingreso.txt", ios::out | ios::app); // el app, es pa que lo cree si no existe
+		cout << "\nCedula: ";
+		getline(cin, aux_cedula);
+		cout << "\nPrimer nombre: ";
+		getline(cin, aux_nombre1);
+		cout << "\nSegundo nombre: ";
+		getline(cin, aux_nombre2);
+		cout << "\nPrimer apellido: ";
+		getline(cin, aux_apellido1);
+		cout << "\nSegundo apellido: ";
+		getline(cin, aux_apellido2);
+		cout << "\nTelefono: ";
+		getline(cin, aux_telefono);
+		cout << "\nDireccion: ";
+		getline(cin, aux_direccion);
+		cout << "\nCorreo electronico: ";
+		getline(cin, aux_correo);
 	}
+	arIngreso << endl<<aux_cedula << endl
+			  << aux_nombre1 << endl
+			  << aux_nombre2 << endl
+			  << aux_apellido1 << endl
+			  << aux_apellido2 << endl
+			  << aux_telefono << endl
+			  << aux_direccion << endl
+			  << aux_correo;
+	cout << "\nRegistro guardado con exito!\n";
+	system("pause");
+	system("cls");
 
-	system(CLEAR);
-	cout << "\nCedula: ";
-	cin >> cedula;
-	cout << "\nPrimer nombre: ";
-	cin >> nombre1;
-	cout << "\nSegundo nombre: ";
-	cin >> nombre2;
-	cout << "\nPrimer apellido: ";
-	cin >> apellido1;
-	cout << "\nSegundo apellido: ";
-	cin >> apellido2;
-	cout << "\nTelefono: ";
-	cin >> telefono;
-	cout << "\nDireccion: ";
-	cin >> direccion;
-	cout << "\nCorreo electronico: ";
-	cin >> correo;
-
-	system(CLEAR);
-	cout << "\n1. Guardar registro \n2. Regresar\n"
-		 << endl;
-	cout << "\nDigite una opcion: ";
-	cin >> op2;
-
-	if (op2 == 1)
-	{
-		arIngreso << " " << cedula << " " << nombre1 << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << endl;
-
-		cout << "\nRegistro guardado con exito!\n";
-		system("pause");
-		system(CLEAR);
-	}
 	arIngreso.close();
 }
 
@@ -117,15 +119,17 @@ void Registro::retirar()
 	system("cls");
 
 	string key = "";
+	string vacio = "";
 	bool encontrado = false;
 	int opc = 1;
+	int contadur=0;
 
-	fstream arRetirar("ingreso.txt");
-	ofstream tempo("auxiliar.txt");
+	ifstream arRetirar;
+	ofstream tempo;
 
 	do
 	{
-		system(CLEAR);
+		system("cls");
 		cout << "\n Elija el dato a retirar" << endl
 			 << endl;
 		cout << "1. Cedula" << endl;
@@ -144,337 +148,340 @@ void Registro::retirar()
 
 		switch (opc)
 		{
-		case 1:
+		case 1: // cedula
 			system("cls");
-			arRetirar.open("ingreso.txt");
-			tempo.open("auxiliar.txt");
-			arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-			fflush(stdin);
+			arRetirar.open("ingreso.txt", ios::in);
+			tempo.open("auxiliar.txt", ios::app);
 
-			cout << "Ingrese clave a eliminar" << endl;
-			cin >> key;
-			if (!arRetirar.eof())
-			{
-				arRetirar >> cedula;
-				if (cedula == key)
+			if (arRetirar.is_open())
+			{	
+				cout << "Ingrese la cedula a eliminar" << endl;
+				cin >> key;		
+				while (!arRetirar.eof())
 				{
-					encontrado = true;
-					cout << "Cedula:	" << cedula << endl;
-					cout << "Cedula eliminada exitosamente!" << endl;
+					arRetirar>>cedula;
+					if (cedula == key)
+					{
+						encontrado = true;
+						cout << "Cedula:	" << cedula << endl;
+						cout << "Cedula eliminada exitosamente!" << endl;
+						tempo <<endl<<vacio<<endl<<nombre1<< endl << nombre2 << endl <<apellido1 << endl <<apellido2 << endl <<telefono << endl <<direccion << endl <<correo;
+						contadur++;
+						system("pause");
+					}
+					else
+					{
+						tempo <<endl<<cedula<<endl<<nombre1<< endl << nombre2 << endl <<apellido1 << endl <<apellido2 << endl <<telefono << endl <<direccion << endl <<correo;
+					}
+					arRetirar >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
+				}	
+				arRetirar.close();
+				tempo.close();
+				if (encontrado == false)
+				{
+					cout << "Clave no encontrada" << endl;
 					system("pause");
-				}
-				else
-				{
-					tempo << nombre1 << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << " " << cedula << endl;
-				}
-				arRetirar >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-				arRetirar << "Primer nombre: " << nombre1 << endl;
-				arRetirar << "Segundo nombre: " << nombre2 << endl;
-				arRetirar << "Primer apellido: " << apellido1 << endl;
-				arRetirar << "Segundo apellido: " << apellido2 << endl;
-				arRetirar << "Telefono: " << telefono << endl;
-				arRetirar << "Direccion: " << direccion << endl;
-				arRetirar << "Correo electronico: " << correo << endl;
+				}	
 			}
-			if (encontrado == false)
-			{
-				cout << "Clave no encontrada" << endl;
-			}
-			arRetirar.close();
-			tempo.close();
 			remove("ingreso.txt");
 			rename("auxiliar.txt", "ingreso.txt");
 			break;
-		case 2:
+		case 2: // nombre1
 			system("cls");
 			arRetirar.open("ingreso.txt");
 			tempo.open("auxiliar.txt");
 			arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-			fflush(stdin);
 
-			cout << "Ingrese clave a eliminar" << endl;
+			cout << "Ingrese el primer nombre a eliminar" << endl;
 			cin >> key;
 			if (!arRetirar.eof())
 			{
-				arRetirar >> cedula;
-				if (cedula == key)
+				arRetirar >> nombre1;
+				if (nombre1 == key)
 				{
 					encontrado = true;
-					cout << "Cedula:	" << cedula << endl;
-					cout << "Cedula eliminada exitosamente!" << endl;
+					cout << "Primer nombre:	" << nombre1 << endl;
+					cout << "Primer nombre eliminado exitosamente!" << endl;
 					system("pause");
 				}
 				else
 				{
-					tempo << cedula << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << " " << cedula << endl;
+					tempo << endl<<cedula <<endl << nombre2 <<endl << apellido1 <<endl << apellido2 <<endl << telefono <<endl << direccion <<endl << correo;
 				}
 				arRetirar >> cedula >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-				arRetirar << "Primer nombre: " << nombre1 << endl;
-				arRetirar << "Segundo nombre: " << nombre2 << endl;
-				arRetirar << "Primer apellido: " << apellido1 << endl;
-				arRetirar << "Segundo apellido: " << apellido2 << endl;
-				arRetirar << "Telefono: " << telefono << endl;
-				arRetirar << "Direccion: " << direccion << endl;
-				arRetirar << "Correo electronico: " << correo << endl;
+				// arRetirar << endl
+				// 		  << cedula << endl
+				// 		  << nombre2 << endl
+				// 		  << apellido1 << endl
+				// 		  << apellido2 << endl
+				// 		  << telefono << endl
+				// 		  << direccion << endl
+				// 		  << correo;
 			}
 			if (encontrado == false)
 			{
 				cout << "Clave no encontrada" << endl;
+				system("pause");
 			}
 			arRetirar.close();
 			tempo.close();
 			remove("ingreso.txt");
 			rename("auxiliar.txt", "ingreso.txt");
 			break;
-		case 3:
+		case 3: // nombre2
 			system("cls");
 			arRetirar.open("ingreso.txt");
 			tempo.open("auxiliar.txt");
 			arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-			fflush(stdin);
 
-			cout << "Ingrese clave a eliminar" << endl;
+			cout << "Ingrese el segundo nombre a eliminar" << endl;
 			cin >> key;
 			if (!arRetirar.eof())
 			{
-				arRetirar >> cedula;
-				if (cedula == key)
+				arRetirar >> nombre2;
+				if (nombre2 == key)
 				{
 					encontrado = true;
-					cout << "Cedula:	" << cedula << endl;
-					cout << "Cedula eliminada exitosamente!" << endl;
+					cout << "Segundo nombre:	" << nombre2 << endl;
+					cout << "Segundo nombre eliminado exitosamente!" << endl;
 					system("pause");
 				}
 				else
 				{
-					tempo << nombre1 << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << " " << cedula << endl;
+					tempo <<endl<< cedula << endl<< nombre1 << endl<< apellido1 << endl<< apellido2 << endl<< telefono << endl<< direccion << endl<< correo;
 				}
-				arRetirar >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-				arRetirar << "Primer nombre: " << nombre1 << endl;
-				arRetirar << "Segundo nombre: " << nombre2 << endl;
-				arRetirar << "Primer apellido: " << apellido1 << endl;
-				arRetirar << "Segundo apellido: " << apellido2 << endl;
-				arRetirar << "Telefono: " << telefono << endl;
-				arRetirar << "Direccion: " << direccion << endl;
-				arRetirar << "Correo electronico: " << correo << endl;
+				arRetirar >> cedula >> nombre1 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
+				// arRetirar << endl
+				// 		  << cedula << endl
+				// 		  << nombre1 << endl
+				// 		  << apellido1 << endl
+				// 		  << apellido2 << endl
+				// 		  << telefono << endl
+				// 		  << direccion << endl
+				// 		  << correo;
 			}
 			if (encontrado == false)
 			{
 				cout << "Clave no encontrada" << endl;
+				system("pause");
 			}
 			arRetirar.close();
 			tempo.close();
 			remove("ingreso.txt");
 			rename("auxiliar.txt", "ingreso.txt");
 			break;
-		case 4:
+		case 4: // apellido1
 			system("cls");
 			arRetirar.open("ingreso.txt");
 			tempo.open("auxiliar.txt");
 			arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-			fflush(stdin);
 
-			cout << "Ingrese clave a eliminar" << endl;
+			cout << "Ingrese el primer apellido a eliminar" << endl;
 			cin >> key;
 			if (!arRetirar.eof())
 			{
-				arRetirar >> cedula;
-				if (cedula == key)
+				arRetirar >> apellido1;
+				if (apellido1 == key)
 				{
 					encontrado = true;
-					cout << "Cedula:	" << cedula << endl;
-					cout << "Cedula eliminada exitosamente!" << endl;
+					cout << "Primer apellido:	" << apellido1 << endl;
+					cout << "Primer apellido eliminado exitosamente!" << endl;
 					system("pause");
 				}
 				else
 				{
-					tempo << nombre1 << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << " " << cedula << endl;
+					tempo <<endl<< cedula <<endl << nombre1 <<endl << nombre2 <<endl << apellido2 <<endl << telefono <<endl << direccion <<endl << correo;
 				}
-				arRetirar >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-				arRetirar << "Primer nombre: " << nombre1 << endl;
-				arRetirar << "Segundo nombre: " << nombre2 << endl;
-				arRetirar << "Primer apellido: " << apellido1 << endl;
-				arRetirar << "Segundo apellido: " << apellido2 << endl;
-				arRetirar << "Telefono: " << telefono << endl;
-				arRetirar << "Direccion: " << direccion << endl;
-				arRetirar << "Correo electronico: " << correo << endl;
+				arRetirar >> cedula >> nombre1 >> nombre2 >> apellido2 >> telefono >> direccion >> correo;
+				// arRetirar << endl
+				// 		  << cedula << endl
+				// 		  << nombre1 << endl
+				// 		  << nombre2 << endl
+				// 		  << apellido2 << endl
+				// 		  << telefono << endl
+				// 		  << direccion << endl
+				// 		  << correo;
 			}
 			if (encontrado == false)
 			{
 				cout << "Clave no encontrada" << endl;
+				system("pause");
 			}
 			arRetirar.close();
 			tempo.close();
 			remove("ingreso.txt");
 			rename("auxiliar.txt", "ingreso.txt");
 			break;
-		case 5:
+		case 5: // apellido2
 			system("cls");
 			arRetirar.open("ingreso.txt");
 			tempo.open("auxiliar.txt");
 			arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-			fflush(stdin);
 
-			cout << "Ingrese clave a eliminar" << endl;
+			cout << "Ingrese el segundo apellido a eliminar" << endl;
 			cin >> key;
 			if (!arRetirar.eof())
 			{
-				arRetirar >> cedula;
-				if (cedula == key)
+				arRetirar >> apellido2;
+				if (apellido2 == key)
 				{
 					encontrado = true;
-					cout << "Cedula:	" << cedula << endl;
-					cout << "Cedula eliminada exitosamente!" << endl;
+					cout << "Segundo apellido:	" << apellido2 << endl;
+					cout << "Segundo apellido eliminado exitosamente!" << endl;
 					system("pause");
 				}
 				else
 				{
-					tempo << nombre1 << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << " " << cedula << endl;
+					tempo <<endl<< cedula <<endl << nombre1 <<endl << nombre2 <<endl << apellido1 <<endl << telefono <<endl << direccion <<endl << correo;
 				}
-				arRetirar >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-				arRetirar << "Primer nombre: " << nombre1 << endl;
-				arRetirar << "Segundo nombre: " << nombre2 << endl;
-				arRetirar << "Primer apellido: " << apellido1 << endl;
-				arRetirar << "Segundo apellido: " << apellido2 << endl;
-				arRetirar << "Telefono: " << telefono << endl;
-				arRetirar << "Direccion: " << direccion << endl;
-				arRetirar << "Correo electronico: " << correo << endl;
+				arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> telefono >> direccion >> correo;
+				// arRetirar << endl
+				// 		  << cedula << endl
+				// 		  << nombre1 << endl
+				// 		  << nombre2 << endl
+				// 		  << apellido1 << endl
+				// 		  << telefono << endl
+				// 		  << direccion << endl
+				// 		  << correo;
 			}
 			if (encontrado == false)
 			{
 				cout << "Clave no encontrada" << endl;
+				system("pause");
 			}
 			arRetirar.close();
 			tempo.close();
 			remove("ingreso.txt");
 			rename("auxiliar.txt", "ingreso.txt");
 			break;
-		case 6:
+		case 6: // telefono
 			system("cls");
 			arRetirar.open("ingreso.txt");
 			tempo.open("auxiliar.txt");
 			arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-			fflush(stdin);
 
-			cout << "Ingrese clave a eliminar" << endl;
+			cout << "Ingrese telefono a eliminar" << endl;
 			cin >> key;
 			if (!arRetirar.eof())
 			{
-				arRetirar >> cedula;
-				if (cedula == key)
+				arRetirar >> telefono;
+				if (telefono == key)
 				{
 					encontrado = true;
-					cout << "Cedula:	" << cedula << endl;
-					cout << "Cedula eliminada exitosamente!" << endl;
+					cout << "Telefono:	" << telefono << endl;
+					cout << "Telefono eliminado exitosamente!" << endl;
 					system("pause");
 				}
 				else
 				{
-					tempo << nombre1 << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << " " << cedula << endl;
+					tempo << endl<<cedula <<endl << nombre1 <<endl << nombre2 <<endl << apellido1 <<endl << apellido2 <<endl << direccion <<endl << correo;
 				}
-				arRetirar >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-				arRetirar << "Primer nombre: " << nombre1 << endl;
-				arRetirar << "Segundo nombre: " << nombre2 << endl;
-				arRetirar << "Primer apellido: " << apellido1 << endl;
-				arRetirar << "Segundo apellido: " << apellido2 << endl;
-				arRetirar << "Telefono: " << telefono << endl;
-				arRetirar << "Direccion: " << direccion << endl;
-				arRetirar << "Correo electronico: " << correo << endl;
+				arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> direccion >> correo;
+				// arRetirar << endl
+				// 		  << cedula << endl
+				// 		  << nombre1 << endl
+				// 		  << nombre2 << endl
+				// 		  << apellido1 << endl
+				// 		  << apellido2 << endl
+				// 		  << direccion << endl
+				// 		  << correo;
 			}
 			if (encontrado == false)
 			{
 				cout << "Clave no encontrada" << endl;
+				system("pause");
 			}
 			arRetirar.close();
 			tempo.close();
 			remove("ingreso.txt");
 			rename("auxiliar.txt", "ingreso.txt");
 			break;
-		case 7:
+		case 7: // direccion
 			system("cls");
 			arRetirar.open("ingreso.txt");
 			tempo.open("auxiliar.txt");
 			arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-			fflush(stdin);
 
-			cout << "Ingrese clave a eliminar" << endl;
+			cout << "Ingrese direccion a eliminar" << endl;
 			cin >> key;
 			if (!arRetirar.eof())
 			{
-				arRetirar >> cedula;
-				if (cedula == key)
+				arRetirar >> direccion;
+				if (direccion == key)
 				{
 					encontrado = true;
-					cout << "Cedula:	" << cedula << endl;
-					cout << "Cedula eliminada exitosamente!" << endl;
+					cout << "Direccion:	" << direccion << endl;
+					cout << "Direccion eliminada exitosamente!" << endl;
 					system("pause");
 				}
 				else
 				{
-					tempo << nombre1 << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << " " << cedula << endl;
+					tempo << endl<<cedula <<endl << nombre1 <<endl << nombre2 <<endl << apellido1 <<endl << apellido2 <<endl << telefono <<endl << correo;
 				}
-				arRetirar >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-				arRetirar << "Primer nombre: " << nombre1 << endl;
-				arRetirar << "Segundo nombre: " << nombre2 << endl;
-				arRetirar << "Primer apellido: " << apellido1 << endl;
-				arRetirar << "Segundo apellido: " << apellido2 << endl;
-				arRetirar << "Telefono: " << telefono << endl;
-				arRetirar << "Direccion: " << direccion << endl;
-				arRetirar << "Correo electronico: " << correo << endl;
+				arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> correo;
+				// arRetirar << endl
+				// 		  << cedula << endl
+				// 		  << nombre1 << endl
+				// 		  << nombre2 << endl
+				// 		  << apellido1 << endl
+				// 		  << apellido2 << endl
+				// 		  << telefono << endl
+				// 		  << correo;
 			}
 			if (encontrado == false)
 			{
 				cout << "Clave no encontrada" << endl;
+				system("pause");
 			}
 			arRetirar.close();
 			tempo.close();
 			remove("ingreso.txt");
 			rename("auxiliar.txt", "ingreso.txt");
 			break;
-		case 8:
+		case 8: // correo
 			system("cls");
 			arRetirar.open("ingreso.txt");
 			tempo.open("auxiliar.txt");
 			arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-			fflush(stdin);
 
-			cout << "Ingrese clave a eliminar" << endl;
+			cout << "Ingrese correo a eliminar" << endl;
 			cin >> key;
 			if (!arRetirar.eof())
 			{
-				arRetirar >> cedula;
-				if (cedula == key)
+				arRetirar >> correo;
+				if (correo == key)
 				{
 					encontrado = true;
-					cout << "Cedula:	" << cedula << endl;
-					cout << "Cedula eliminada exitosamente!" << endl;
+					cout << "Correo:	" << correo << endl;
+					cout << "Correo eliminado exitosamente!" << endl;
 					system("pause");
 				}
 				else
 				{
-					tempo << nombre1 << " " << nombre2 << " " << apellido1 << " " << apellido2 << " " << telefono << " " << direccion << " " << correo << " " << cedula << endl;
+					tempo <<endl<< cedula << endl << nombre1 << endl<< nombre2 << endl << apellido1 << endl<< apellido2 << endl << telefono << endl << direccion;
 				}
-				arRetirar >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion >> correo;
-				arRetirar << "Primer nombre: " << nombre1 << endl;
-				arRetirar << "Segundo nombre: " << nombre2 << endl;
-				arRetirar << "Primer apellido: " << apellido1 << endl;
-				arRetirar << "Segundo apellido: " << apellido2 << endl;
-				arRetirar << "Telefono: " << telefono << endl;
-				arRetirar << "Direccion: " << direccion << endl;
-				arRetirar << "Correo electronico: " << correo << endl;
+				arRetirar >> cedula >> nombre1 >> nombre2 >> apellido1 >> apellido2 >> telefono >> direccion;
+				// arRetirar << "Cedula: " << cedula << endl;
+				// arRetirar << "Primer nombre: " << nombre1 << endl;
+				// arRetirar << "Segundo nombre: " << nombre2 << endl;
+				// arRetirar << "Primer apellido: " << apellido1 << endl;
+				// arRetirar << "Segundo apellido: " << apellido2 << endl;
+				// arRetirar << "Telefono: " << telefono << endl;
+				// arRetirar << "Direccion: " << direccion << endl;
 			}
 			if (encontrado == false)
 			{
 				cout << "Clave no encontrada" << endl;
+				system("pause");
 			}
 			arRetirar.close();
 			tempo.close();
 			remove("ingreso.txt");
 			rename("auxiliar.txt", "ingreso.txt");
 			break;
-		case 9:
+		case 9: // salir
 			opc = 0;
-			system(CLEAR);
+			system("cls");
 			break;
 		default:
 			cout << "Ingreso una opcion no valida! ";
@@ -542,31 +549,38 @@ void Registro::listar()
 {
 	system("cls");
 
-	ifstream arListar("ingreso.txt");
+	ifstream arListar;
 	arListar.open("ingreso.txt", ios::in);
 
-	arListar >> cedula;
-	arListar >> nombre1;
-	arListar >> nombre2;
-	arListar >> apellido1;
-	arListar >> apellido2;
-	arListar >> telefono;
-	arListar >> direccion;
-	arListar >> correo;
-
-	if (!arListar.eof())
+	getline(arListar, cedula);
+	if (arListar.is_open())
 	{
-		cout << "----------------------------" << endl;
-		cout << "Cedula: " << cedula << endl;
-		cout << "Primer nombre: " << nombre1 << endl;
-		cout << "Segundo nombre: " << nombre2 << endl;
-		cout << "Primer apellido: " << apellido1 << endl;
-		cout << "Segundo apellido: " << apellido2 << endl;
-		cout << "Telefono: " << telefono << endl;
-		cout << "Direccion: " << direccion << endl;
-		cout << "Correo: " << correo << endl;
-		cout << "----------------------------" << endl;
-		cout << endl;
+		getline(arListar, cedula);
+
+		while (!arListar.eof())
+		{
+			getline(arListar, nombre1);
+			getline(arListar, nombre2);
+			getline(arListar, apellido1);
+			getline(arListar, apellido2);
+			getline(arListar, telefono);
+			getline(arListar, direccion);
+			getline(arListar, correo);
+
+			cout << "----------------------------" << endl;
+			cout << "Cedula: " << cedula << endl;
+			cout << "Primer nombre: " << nombre1 << endl;
+			cout << "Segundo nombre: " << nombre2 << endl;
+			cout << "Primer apellido: " << apellido1 << endl;
+			cout << "Segundo apellido: " << apellido2 << endl;
+			cout << "Telefono: " << telefono << endl;
+			cout << "Direccion: " << direccion << endl;
+			cout << "Correo: " << correo << endl;
+			cout << "----------------------------" << endl;
+			cout << endl;
+
+			getline(arListar, cedula);
+		}
 	}
 	arListar.close();
 	system("pause");
@@ -574,7 +588,7 @@ void Registro::listar()
 
 void error()
 {
-	cout << "Hubo un error chamaco pendejo\n";
+	cout << "Hubo un error xd\n";
 }
 
 int main()
