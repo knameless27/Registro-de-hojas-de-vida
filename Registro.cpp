@@ -118,29 +118,27 @@ void Registro::ingresar()
 void Registro::retirar()
 {
 	system("cls");
-	
+
 	ifstream arRetirar;
-    ofstream aux;
-    
-    bool encontrado=false;
-    
-    string auxCedula;
-    char respuesta[5];
-    
-    arRetirar.open("ingreso.txt",ios::in);
-    aux.open("auxiliar.txt",ios::out);
-    
-    cout<<"\t\t\t\t*** Dar de baja un Amigo ***\t\t\t\t\n\n";
-    if ( arRetirar.is_open() && aux.is_open() )
-    {
-        fflush(stdin);
-        cout<<"Ingresa el c\242digo del Amigo que deseas dar de baja: ";
-        getline(cin,auxCedula);
-        
-        getline(arRetirar,cedula);
-        while( !arRetirar.eof() )
-        {
-			getline(arRetirar,cedula);
+	ofstream aux;
+
+	bool encontrado = false;
+
+	string auxCedula;
+	string respuesta;
+
+	arRetirar.open("ingreso.txt", ios::in);
+	aux.open("auxiliar.txt", ios::out);
+
+	cout << "\t\t\t\tEliminar un registro\t\t\t\t\n\n";
+	if (arRetirar.is_open() && aux.is_open())
+	{
+		cout << "Ingresa la cedula de la persona que desea eliminar: ";
+		getline(cin, auxCedula);
+
+		arRetirar>>cedula;
+		while (!arRetirar.eof())
+		{
 			getline(arRetirar, nombre1);
 			getline(arRetirar, nombre2);
 			getline(arRetirar, apellido1);
@@ -149,118 +147,136 @@ void Registro::retirar()
 			getline(arRetirar, direccion);
 			getline(arRetirar, correo);
 
-            if(auxCedula == cedula)
-            {
-                encontrado=true;
-                cout<<"\n\nRegistro Encontrado\n\n";
-                cout<<"Cedula : "<<cedula<<endl;
-                cout<<"Primer nombre : "<<nombre1<<endl;
-				cout<<"Segundo nombre : "<<nombre2<<endl;
-				cout<<"Primer apellido : "<<apellido1<<endl;
-				cout<<"Segundo apellido : "<<apellido2<<endl;
-				cout<<"Telefono : "<<telefono<<endl;
-				cout<<"Direccion : "<<direccion<<endl;
-				cout<<"Correo : "<<correo<<endl<<endl;
-                
-                cout<<"Realmente deseas eliminar a esta persona?  (s/n)?: ";
-                cin.getline(respuesta,5);
-                
-                if(respuesta=="s"||respuesta=="si"||respuesta=="Si"||respuesta=="sI"||respuesta=="i")
-                  {
-                    cout<<"\n\nSe ha eliminado la persona\n\n";
-					system("pause");
-                  }
-
-                else
-                {
-                    cout<<"\n\nCliente conservado\n\n";
-                    aux<<"\n"<<cedula<<"\n"<<nombre1<<"\n"<<nombre2<<"\n"<<apellido1<<"\n"<<apellido2<<"\n"<<telefono<<"\n"<<direccion<<"\n"<<correo;
-					system("pause");
-
-                }
-
-            }
-            else
-            {
-                aux<<"\n"<<cedula<<"\n"<<nombre1<<"\n"<<nombre2<<"\n"<<apellido1<<"\n"<<apellido2<<"\n"<<telefono<<"\n"<<direccion<<"\n"<<correo;
-            }
-            
-            getline(arRetirar,cedula);
-        }
-        if(encontrado==false)
-        {
-            cout<<"\n\nNo se encontr\242 la cedula: "<<auxCedula<<"\n\n";
-			system("pause");
-        }
-
-    }
-    else
-    {
-        error();
-    }
-    arRetirar.close();
-    aux.close();
-    remove("ingreso.txt");
-    rename("auxiliar.txt","ingreso.txt");
-}
-
-void Registro::modificar()
-{
-	system("cls");
-
-	fstream arModif;					   // creo la wea de fstream para modificar ingreso
-	arModif.open("ingreso.txt", ios::in);  // aqui la abro y le digo que la voy a usar solo para lectura
-	ofstream aux("auxiMod.txt", ios::out); // aqui abro y creo una variable ofstream para escritura
-
-	arModif >> cedula; // en todo esto agarro los datos de cedula, nombre y demas
-	arModif >> nombre1;
-	arModif >> nombre2;
-	arModif >> apellido1;
-	arModif >> apellido2;
-	arModif >> telefono;
-	arModif >> direccion;
-	arModif >> correo;
-
-	string cedaux; // declaro variables auxiliares
-	string cedaux2;
-
-	if (arModif.is_open())
-	{
-		cout << "cedula a buscar: ";
-		cin >> cedaux;
-		arModif >> cedula;
-
-		if (!arModif.eof())
-		{
-			arModif >> nombre1;
-			arModif >> apellido1;
-			arModif >> cedula;
-			if (cedula == cedaux)
+			if (auxCedula == cedula)
 			{
-				cout << "la nueva cedula pa: ";
-				cin >> cedaux2;
-				aux << endl
-					<< cedaux2 << endl
+				encontrado = true;
+				cout << "\n\nRegistro Encontrado\n\n";
+				cout << "Cedula : " << cedula << endl;
+				cout << "Primer nombre : " << nombre1 << endl;
+				cout << "Segundo nombre : " << nombre2 << endl;
+				cout << "Primer apellido : " << apellido1 << endl;
+				cout << "Segundo apellido : " << apellido2 << endl;
+				cout << "Telefono : " << telefono << endl;
+				cout << "Direccion : " << direccion << endl;
+				cout << "Correo : " << correo << endl
+					 << endl;
+
+				cout << "Realmente deseas eliminar a esta persona?  (s/n)?: ";
+				getline(cin, respuesta);
+
+				if (respuesta == "s" || respuesta == "si" || respuesta == "Si" || respuesta == "sI" || respuesta == "i")
+				{
+					cout << "\n\nSe ha eliminado la persona\n\n";
+					system("pause");
+				}
+				else
+				{
+					cout << "\n\nCliente conservado\n\n";
+					aux << cedula << endl
+						<< nombre1 << endl
+						<< nombre2 << endl
+						<< apellido1 << endl
+						<< apellido2 << endl
+						<< telefono << endl
+						<< direccion << endl
+						<< correo<<endl;
+					system("pause");
+				}
+			}
+			else
+			{
+				aux << cedula << endl
 					<< nombre1 << endl
 					<< nombre2 << endl
 					<< apellido1 << endl
 					<< apellido2 << endl
 					<< telefono << endl
 					<< direccion << endl
-					<< correo;
+					<< correo << endl;
 			}
-			else
+			getline(arRetirar, cedula);
+		}
+		if (encontrado == false)
+		{
+			cout << "\n\nNo se encontr\242 la cedula: " << auxCedula << "\n\n";
+			system("pause");
+		}
+	}
+	else
+	{
+		error();
+	}
+	arRetirar.close();
+	aux.close();
+	remove("ingreso.txt");
+	rename("auxiliar.txt", "ingreso.txt");
+}
+
+void Registro::modificar()
+{
+	system("cls");
+
+	string cedaux; // declaro variables auxiliares
+	string cedaux2;
+	bool encontrado = false;
+
+	fstream arModif; // creo la wea de fstream para modificar ingreso
+	ofstream aux;	 // aqui abro y creo una variable ofstream para escritura
+
+	arModif.open("ingreso.txt", ios::in); // aqui la abro y le digo que la voy a usar solo para lectura
+	aux.open("auxiMod.txt", ios::out);
+
+	if (arModif.is_open() && aux.is_open())
+	{
+		cout << "cedula a buscar: ";
+		cin >> cedaux;
+
+		arModif >> cedula;
+		while (!arModif.eof())
+		{
+			getline(arModif, nombre1);
+			getline(arModif, nombre2);
+			getline(arModif, apellido1);
+			getline(arModif, apellido2);
+			getline(arModif, telefono);
+			getline(arModif, direccion);
+			getline(arModif, correo);
+			if (cedaux == cedula)
 			{
-				aux << nombre1 << endl
+				encontrado=true;
+				cout << "la nueva cedula pa: ";
+				cin >> cedaux2;
+				aux << endl
+					<< cedaux2 << nombre1
+					<< endl
 					<< nombre2 << endl
 					<< apellido1 << endl
 					<< apellido2 << endl
 					<< telefono << endl
 					<< direccion << endl
-					<< correo;
+					<< correo << endl;
+				cout << "cedula guardada correctamente!"<<endl;
+				system("pause");
 			}
-			arModif >> cedula;
+			else
+			{
+				aux << cedula << endl
+					<< nombre1 << endl
+					<< nombre2 << endl
+					<< apellido1 << endl
+					<< apellido2 << endl
+					<< telefono << endl
+					<< direccion << endl
+					<< correo << endl;
+			}
+			getline(arModif,cedula);
 		}
+		if (encontrado==false)
+		{
+			cout<<"no se ha encontrado la cedula "<<cedaux<<endl;
+			system("pause");
+		}
+		
 
 		arModif.close();
 		aux.close();
@@ -317,6 +333,7 @@ void Registro::listar()
 void error()
 {
 	cout << "Hubo un error xd\n";
+	system("pause");
 }
 
 int main()
