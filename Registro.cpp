@@ -22,7 +22,7 @@ using namespace std;
 class DBasicos
 {
 private:
-	string cedula, nombre1, nombre2, apellido1, apellido2, telefono, direccion, correo, RH, fechaN="",sexToS,nacioTos,estTos,activo;
+	string cedula, nombre1, nombre2, apellido1, apellido2, telefono, direccion, correo, RH, fechaN = "", sexToS, nacioTos, estTos, activo;
 	int sexo, nacionalidad, estadoCv, diaN, mesN, anoN;
 
 public:
@@ -39,9 +39,9 @@ class Estudios
 {
 private:
 	string cedula;
-	string instituto;
+	string entidadEd;
 	string titulo;
-	string fecha;
+	string fechaT;
 
 public:
 	void ingresar_est();
@@ -57,9 +57,10 @@ class HLaboral
 {
 private:
 	string cedula;
-	string instituto;
-	string titulo;
-	string fecha;
+	string empresa;
+	string cargo;
+	string fechaIni;
+	string fechaTer;
 
 public:
 	void ingresar_est();
@@ -259,7 +260,7 @@ void DBasicos::ingresar()
 			break;
 		}
 		auto sextS = std::to_string(sexo);
-		sexToS=sextS;
+		sexToS = sextS;
 
 		cout << "\n\n Digite su nacionalidad: ";
 
@@ -288,7 +289,7 @@ void DBasicos::ingresar()
 			break;
 		}
 		auto nactS = std::to_string(nacionalidad);
-		nacioTos=nactS;
+		nacioTos = nactS;
 
 		cout << "\n\n Digite su estado civil: ";
 
@@ -327,7 +328,7 @@ void DBasicos::ingresar()
 			break;
 		}
 		auto esttS = std::to_string(estadoCv);
-		estTos=esttS;
+		estTos = esttS;
 
 		cout << "\n\n Digite el dia de su nacimiento: ";
 		cin >> diaN;
@@ -344,14 +345,12 @@ void DBasicos::ingresar()
 		auto mestS = std::to_string(mesN);
 		auto anotS = std::to_string(anoN);
 
-		fechaN=diatS+"-"+mestS+"-"+anotS;
-
-		system("pause");
+		fechaN = diatS + "-" + mestS + "-" + anotS;
 
 		tm timeinfo = tm();
-		int anotemp=anoN-1900;
+		int anotemp = anoN - 1900;
 		timeinfo.tm_mday = diaN;
-		timeinfo.tm_mon = mesN+1;
+		timeinfo.tm_mon = mesN + 1;
 		timeinfo.tm_year = anotemp;
 
 		auto t_x = mktime(&timeinfo);
@@ -363,13 +362,15 @@ void DBasicos::ingresar()
 		typedef chrono::duration<int, ratio<SEGS_POR_DIA>> dias_t;
 		int n_dias = chrono::duration_cast<dias_t>(diferencia).count();
 
-		if(n_dias<6570){
-			cout<<endl<<"No se puede postular porque usted es menor de edad!"<<endl;
-			system("pause");
+		if (n_dias < 6570)
+		{
+			cout << endl
+				 << "No se puede postular porque usted es menor de edad!" << endl;
 			return;
 		}
 	}
 
+	system("pause");
 	cout << "\n\n Digite su RH: ";
 	getline(cin, RH);
 
@@ -386,21 +387,20 @@ void DBasicos::ingresar()
 	arIngresar << cedula << endl
 			   << nombre1 << endl
 			   << nombre2 << endl
-			   << apellido1<< endl
-			   << apellido2<< endl
-			   << telefono<< endl
-			   << direccion<< endl
-			   << correo<< endl
-			   << sexo<< endl
-			   << nacionalidad<< endl
-			   << estadoCv<< endl
-			   << diaN<<"-"<<mesN<<"-"<<anoN<< endl
-			   << RH<< endl
+			   << apellido1 << endl
+			   << apellido2 << endl
+			   << telefono << endl
+			   << direccion << endl
+			   << correo << endl
+			   << sexo << endl
+			   << nacionalidad << endl
+			   << estadoCv << endl
+			   << diaN << "-" << mesN << "-" << anoN << endl
+			   << RH << endl
 			   << activo << endl;
 
 	arIngresar.close();
 }
-
 
 void DBasicos::modificar()
 {
@@ -410,7 +410,9 @@ void DBasicos::modificar()
 	bool encontrado = false;
 
 	string auxCodigo;
+	string tempCed;
 	char respuesta[5];
+	int opt = 0;
 
 	lectura.open("DBasicos.txt", ios::in);
 	auxiliar.open("auxiliar.txt", ios::out);
@@ -439,57 +441,301 @@ void DBasicos::modificar()
 			getline(lectura, RH);
 			getline(lectura, activo);
 
-			if (auxCodigo == nombre1 && activo == "0")
+			if (auxCodigo == cedula && activo != "")
 			{
 				encontrado = true;
 				cout << "\n\nRegistro Encontrado\n\n";
 				cout << "Cedula : " << cedula << endl;
-				cout << "Nombres : " << nombre1<<" "<<nombre2 << endl;
-				cout << "Apellidos : "<< apellido1<<" "<< apellido2<<endl;
-				cout << "telefono : "<<telefono<<endl;
-				cout<< "direccion : "<<direccion<<endl;
-				cout<< "correo : "<<correo<<endl;
-				cout<< "sexo : ";if(sexToS=="1"){cout<<"Masculino"<<endl;}else{cout<<"Femenino"<<endl;};
-				cout<< "nacionalidad : ";if(nacioTos=="1"){cout<<"Colombiano"<<endl;}else{cout<<"Extranjero"<<endl;};
-				cout<< "estado civil : ";if(estTos=="1"){cout<<"soltero"<<endl;}if(estTos=="2"){cout<<"casado"<<endl;}if(estTos=="3"){cout<<"separado"<<endl;}if(estTos=="4"){cout<<"viudo"<<endl;}
-				cout<< "fecha de nacimiento : "<<fechaN<<endl;
-				cout<< "RH : "<<RH<<endl;
+				cout << "Nombres : " << nombre1 << " " << nombre2 << endl;
+				cout << "Apellidos : " << apellido1 << " " << apellido2 << endl;
+				cout << "telefono : " << telefono << endl;
+				cout << "direccion : " << direccion << endl;
+				cout << "correo : " << correo << endl;
+				cout << "sexo : ";
+				if (sexToS == "1")
+				{
+					cout << "Masculino" << endl;
+				}
+				else
+				{
+					cout << "Femenino" << endl;
+				};
+				cout << "nacionalidad : ";
+				if (nacioTos == "1")
+				{
+					cout << "Colombiano" << endl;
+				}
+				else
+				{
+					cout << "Extranjero" << endl;
+				};
+				cout << "estado civil : ";
+				if (estTos == "1")
+				{
+					cout << "soltero" << endl;
+				}
+				if (estTos == "2")
+				{
+					cout << "casado" << endl;
+				}
+				if (estTos == "3")
+				{
+					cout << "separado" << endl;
+				}
+				if (estTos == "4")
+				{
+					cout << "viudo" << endl;
+				}
+				cout << "fechaT de nacimiento : " << fechaN << endl;
+				cout << "RH : " << RH << endl;
 
-				cout << "MODIFICANDO DATOS DEL REGISTRO";
+				cout << endl<<"MODIFICANDO DATOS DEL REGISTRO";
 
-				cout << "\n\n Digite Nombre : ";
-				getline(cin, nombre2);
+				cout << "\n\n Digite la cedula: ";
+				getline(cin, tempCed);
 
-				if (nombre2 == "") // validamos que el nombre2 ,no este vacio
+				if (tempCed == "")
 				{
 					do
 					{
-						cout << "\n\n Digite Nombre : ";
-						getline(cin, nombre2);
-					} while (nombre2 == "");
+						cout << "\n\n Digite la cedula: ";
+						getline(cin, tempCed);
+					} while (tempCed == "");
 				}
 
-				cout << "\n\n Digite Codigo : ";
+				cout << "\n\n Digite su primer nombre: ";
 				getline(cin, nombre1);
+
 				if (nombre1 == "")
 				{
 					do
 					{
-						cout << "\n\n Digite Codigo : ";
+						cout << "\n\n Digite su primer nombre: ";
 						getline(cin, nombre1);
 					} while (nombre1 == "");
 				}
 
-				cout << "\n\n Digite Cedula : ";
-				getline(cin, cedula);
-				if (cedula == "")
+				cout << "\n\n Digite su segundo nombre : ";
+				getline(cin, nombre2);
+
+				if (nombre2 == "")
 				{
 					do
 					{
-						cout << "\n\n Digite Cedula : ";
-						getline(cin, cedula);
-					} while (cedula == "");
+						cout << "\n\n Digite su segundo nombre: ";
+						getline(cin, nombre2);
+					} while (nombre2 == "");
 				}
+
+				cout << "\n\n Digite su primer apellido: ";
+				getline(cin, apellido1);
+
+				if (apellido1 == "")
+				{
+					do
+					{
+						cout << "\n\n Digite su primer apellido: ";
+						getline(cin, apellido1);
+					} while (apellido1 == "");
+				}
+
+				cout << "\n\n Digite su segundo apellido: ";
+				getline(cin, apellido2);
+
+				if (apellido2 == "")
+				{
+					do
+					{
+						cout << "\n\n Digite su segundo apellido: ";
+						getline(cin, apellido2);
+					} while (apellido2 == "");
+				}
+
+				cout << "\n\n Digite su telefono: ";
+				getline(cin, telefono);
+
+				if (telefono == "")
+				{
+					do
+					{
+						cout << "\n\n Digite su telefono: ";
+						getline(cin, telefono);
+					} while (telefono == "");
+				}
+
+				cout << "\n\n Digite su direccion: ";
+				getline(cin, direccion);
+
+				if (direccion == "")
+				{
+					do
+					{
+						cout << "\n\n Digite su direccion: ";
+						getline(cin, direccion);
+					} while (direccion == "");
+				}
+
+				cout << "\n\n Digite su correo electronico: ";
+				getline(cin, correo);
+
+				if (correo == "")
+				{
+					do
+					{
+						cout << "\n\n Digite su correo: ";
+						getline(cin, correo);
+					} while (correo == "");
+				}
+
+				cout << "\n\n Digite su sexo: ";
+
+				cout << endl
+					 << "1. Masculino";
+				cout << endl
+					 << "2. Femenino";
+				cout << endl
+					 << endl
+					 << "(1/2): ";
+				cin >> opt;
+
+				switch (opt)
+				{
+				case 1:
+					sexo = 1;
+					break;
+				case 2:
+					sexo = 2;
+					break;
+				default:
+					do
+					{
+						cout << "\n\n Digite su sexo: ";
+						cin >> sexo;
+					} while (sexo != 1 || sexo != 2);
+					break;
+				}
+				auto sextS = std::to_string(sexo);
+				sexToS = sextS;
+
+				cout << "\n\n Digite su nacionalidad: ";
+
+				cout << endl
+					 << "1. Colombiano";
+				cout << endl
+					 << "2. Extranjero";
+				cout << endl
+					 << endl
+					 << "(1/2): ";
+				cin >> opt;
+				switch (opt)
+				{
+				case 1:
+					nacionalidad = 1;
+					break;
+				case 2:
+					nacionalidad = 2;
+					break;
+				default:
+					do
+					{
+						cout << "\n\n Digite su nacionalidad: ";
+						cin >> nacionalidad;
+					} while (nacionalidad != 1 || nacionalidad != 2);
+					break;
+				}
+				auto nactS = std::to_string(nacionalidad);
+				nacioTos = nactS;
+
+				cout << "\n\n Digite su estado civil: ";
+
+				cout << endl
+					 << "1. soltero";
+				cout << endl
+					 << "2. casado";
+				cout << endl
+					 << "3. separado";
+				cout << endl
+					 << "4. viudo";
+				cout << endl
+					 << endl
+					 << "(1/2/3/4): ";
+				cin >> opt;
+				switch (opt)
+				{
+				case 1:
+					estadoCv = 1;
+					break;
+				case 2:
+					estadoCv = 2;
+					break;
+				case 3:
+					estadoCv = 3;
+					break;
+				case 4:
+					estadoCv = 4;
+					break;
+				default:
+					do
+					{
+						cout << "\n\n Digite su estado civil: ";
+						cin >> estadoCv;
+					} while (estadoCv != 1 || estadoCv != 2 || estadoCv != 3 || estadoCv != 4);
+					break;
+				}
+				auto esttS = std::to_string(estadoCv);
+				estTos = esttS;
+
+				cout << "\n\n Digite el dia de su nacimiento: ";
+				cin >> diaN;
+
+				cout << endl
+					 << " Digite su mes de nacimiento: ";
+				cin >> mesN;
+
+				cout << endl
+					 << " Digite su año de nacimiento: ";
+				cin >> anoN;
+
+				auto diatS = std::to_string(diaN);
+				auto mestS = std::to_string(mesN);
+				auto anotS = std::to_string(anoN);
+
+				fechaN = diatS + "-" + mestS + "-" + anotS;
+
+				tm timeinfo = tm();
+				int anotemp = anoN - 1900;
+				timeinfo.tm_mday = diaN;
+				timeinfo.tm_mon = mesN + 1;
+				timeinfo.tm_year = anotemp;
+
+				auto t_x = mktime(&timeinfo);
+				auto tp_x = chrono::system_clock::from_time_t(t_x);
+				auto tp_hoy = chrono::system_clock::now();
+				auto diferencia = tp_hoy - tp_x;
+
+				const int SEGS_POR_DIA = 60 * 60 * 24;
+				typedef chrono::duration<int, ratio<SEGS_POR_DIA>> dias_t;
+				int n_dias = chrono::duration_cast<dias_t>(diferencia).count();
+
+				if (n_dias < 6570)
+				{
+					cout << endl
+						 << "No se puede postular porque usted es menor de edad!" << endl;
+					return;
+				}
+				system("pause");
+				cout << "\n\n Digite su RH: ";
+				getline(cin, RH);
+
+				if (RH == "")
+				{
+					do
+					{
+						cout << "\n\n Digite su RH: ";
+						getline(cin, RH);
+					} while (RH == "");
+				}
+
 				auxiliar << cedula << endl
 						 << nombre1 << endl
 						 << nombre2 << endl
@@ -522,17 +768,12 @@ void DBasicos::modificar()
 						 << RH << endl
 						 << activo << endl;
 			}
-
 			getline(lectura, cedula);
 		}
 		if (encontrado == false)
 		{
-			cout << "\n\nNo se encontr\242 el c\242digo: " << auxCodigo << "\n\n";
+			cout << "\n\nNo se encontr\242 la cedula: " << auxCodigo << "\n\n";
 		}
-	}
-	else
-	{
-		error();
 	}
 	lectura.close();
 	auxiliar.close();
@@ -554,11 +795,11 @@ void DBasicos::borrado_logico()
 	lectura.open("DBasicos.txt", ios::in);
 	auxiliar.open("auxiliar.txt", ios::out);
 
-	cout << "\t\t\t\t*** Dar de baja un Amigo ***\t\t\t\t\n\n";
+	cout << "\t\t\t\t*** Eliminar hoja de vida de forma logica ***\t\t\t\t\n\n";
 	if (lectura.is_open() && auxiliar.is_open())
 	{
 		fflush(stdin);
-		cout << "Ingresa el c\242digo del Amigo que deseas dar de baja: ";
+		cout << "Ingresa la cedula de la persona que deseas eliminar: ";
 		getline(cin, auxCodigo);
 
 		getline(lectura, cedula);
@@ -566,16 +807,65 @@ void DBasicos::borrado_logico()
 		{
 			getline(lectura, nombre1);
 			getline(lectura, nombre2);
+			getline(lectura, apellido1);
+			getline(lectura, apellido2);
+			getline(lectura, telefono);
+			getline(lectura, direccion);
+			getline(lectura, correo);
+			getline(lectura, sexToS);
+			getline(lectura, nacioTos);
+			getline(lectura, estTos);
+			getline(lectura, fechaN);
+			getline(lectura, RH);
 			getline(lectura, activo);
 
-			if (auxCodigo == nombre1 && activo == "0")
+			if (auxCodigo == cedula && activo != "")
 			{
 				encontrado = true;
 				cout << "\n\nRegistro Encontrado\n\n";
 				cout << "Cedula : " << cedula << endl;
-				cout << "C\242digo : " << nombre1
-					 << endl;
-				cout << "Nombre : " << nombre2 << endl;
+				cout << "Nombres : " << nombre1 << " " << nombre2 << endl;
+				cout << "Apellidos : " << apellido1 << " " << apellido2 << endl;
+				cout << "telefono : " << telefono << endl;
+				cout << "direccion : " << direccion << endl;
+				cout << "correo : " << correo << endl;
+				cout << "sexo : ";
+				if (sexToS == "1")
+				{
+					cout << "Masculino" << endl;
+				}
+				else
+				{
+					cout << "Femenino" << endl;
+				};
+				cout << "nacionalidad : ";
+				if (nacioTos == "1")
+				{
+					cout << "Colombiano" << endl;
+				}
+				else
+				{
+					cout << "Extranjero" << endl;
+				};
+				cout << "estado civil : ";
+				if (estTos == "1")
+				{
+					cout << "soltero" << endl;
+				}
+				if (estTos == "2")
+				{
+					cout << "casado" << endl;
+				}
+				if (estTos == "3")
+				{
+					cout << "separado" << endl;
+				}
+				if (estTos == "4")
+				{
+					cout << "viudo" << endl;
+				}
+				cout << "fechaT de nacimiento : " << fechaN << endl;
+				cout << "RH : " << RH << endl;
 
 				cout << "Realmente deseas dar de Baja-Logico  (s/n)?: ";
 				cin.getline(respuesta, 5);
@@ -586,38 +876,65 @@ void DBasicos::borrado_logico()
 
 				{
 					cout << "\n\nEl Amigo se ha dado de baja correctamente\n\n";
-					activo = "1";
-					auxiliar << cedula << "\n"
-							 << nombre1
-							 << "\n"
-							 << nombre2 << "\n"
-							 << activo << "\n";
+					activo = "";
+					auxiliar << cedula << endl
+						 << nombre1 << endl
+						 << nombre2 << endl
+						 << apellido1 << endl
+						 << apellido2 << endl
+						 << telefono << endl
+						 << direccion << endl
+						 << correo << endl
+						 << sexo << endl
+						 << nacionalidad << endl
+						 << estadoCv << endl
+						 << diaN << "-" << mesN << "-" << anoN << endl
+						 << RH << endl
+						 << activo << endl;
 				}
 
 				else
 				{
 					cout << "\n\nCliente conservado\n\n";
-					auxiliar << cedula << "\n"
-							 << nombre1
-							 << "\n"
-							 << nombre2 << "\n"
-							 << activo << "\n";
+					auxiliar << cedula << endl
+						 << nombre1 << endl
+						 << nombre2 << endl
+						 << apellido1 << endl
+						 << apellido2 << endl
+						 << telefono << endl
+						 << direccion << endl
+						 << correo << endl
+						 << sexo << endl
+						 << nacionalidad << endl
+						 << estadoCv << endl
+						 << diaN << "-" << mesN << "-" << anoN << endl
+						 << RH << endl
+						 << activo << endl;
 				}
 			}
 			else
 			{
-				auxiliar << cedula << "\n"
-						 << nombre1
-						 << "\n"
-						 << nombre2 << "\n"
-						 << activo << "\n";
+				auxiliar << cedula << endl
+						 << nombre1 << endl
+						 << nombre2 << endl
+						 << apellido1 << endl
+						 << apellido2 << endl
+						 << telefono << endl
+						 << direccion << endl
+						 << correo << endl
+						 << sexo << endl
+						 << nacionalidad << endl
+						 << estadoCv << endl
+						 << diaN << "-" << mesN << "-" << anoN << endl
+						 << RH << endl
+						 << activo << endl;
 			}
 
 			getline(lectura, cedula);
 		}
 		if (encontrado == false)
 		{
-			cout << "\n\nNo se encontr\242 el c\242digo: " << auxCodigo << "\n\n";
+			cout << "\n\nNo se encontr\242 la cedula: " << auxCodigo << "\n\n";
 		}
 	}
 	else
@@ -654,14 +971,33 @@ void DBasicos::activar_logico()
 		{
 			getline(lectura, nombre1);
 			getline(lectura, nombre2);
+			getline(lectura, apellido1);
+			getline(lectura, apellido2);
+			getline(lectura, telefono);
+			getline(lectura, direccion);
+			getline(lectura, correo);
+			getline(lectura, sexToS);
+			getline(lectura, nacioTos);
+			getline(lectura, estTos);
+			getline(lectura, fechaN);
+			getline(lectura, RH);
 			getline(lectura, activo);
 
 			activo = "0";
-			auxiliar << cedula << "\n"
-					 << nombre1
-					 << "\n"
-					 << nombre2 << "\n"
-					 << activo << "\n";
+			auxiliar << cedula << endl
+						 << nombre1 << endl
+						 << nombre2 << endl
+						 << apellido1 << endl
+						 << apellido2 << endl
+						 << telefono << endl
+						 << direccion << endl
+						 << correo << endl
+						 << sexo << endl
+						 << nacionalidad << endl
+						 << estadoCv << endl
+						 << diaN << "-" << mesN << "-" << anoN << endl
+						 << RH << endl
+						 << activo << endl;
 
 			getline(lectura, cedula);
 		}
@@ -691,11 +1027,11 @@ void DBasicos::retirar()
 	lectura.open("DBasicos.txt", ios::in);
 	auxiliar.open("auxiliar.txt", ios::out);
 
-	cout << "\t\t\t\t*** Dar de baja un Amigo ***\t\t\t\t\n\n";
+	cout << "\t\t\t\t*** Eliminar una hoja de vida ***\t\t\t\t\n\n";
 	if (lectura.is_open() && auxiliar.is_open())
 	{
 		fflush(stdin);
-		cout << "Ingresa el c\242digo del Amigo que deseas dar de baja: ";
+		cout << "Ingresa la cedula del registro que deseas dar eliminar: ";
 		getline(cin, auxCodigo);
 
 		getline(lectura, cedula);
@@ -703,44 +1039,109 @@ void DBasicos::retirar()
 		{
 			getline(lectura, nombre1);
 			getline(lectura, nombre2);
+			getline(lectura, apellido1);
+			getline(lectura, apellido2);
+			getline(lectura, telefono);
+			getline(lectura, direccion);
+			getline(lectura, correo);
+			getline(lectura, sexToS);
+			getline(lectura, nacioTos);
+			getline(lectura, estTos);
+			getline(lectura, fechaN);
+			getline(lectura, RH);
 			getline(lectura, activo);
 
-			if (auxCodigo == nombre1)
+			if (auxCodigo == cedula)
 			{
 				encontrado = true;
 				cout << "\n\nRegistro Encontrado\n\n";
 				cout << "Cedula : " << cedula << endl;
-				cout << "C\242digo : " << nombre1
-					 << endl;
-				cout << "Nombre : " << nombre2 << endl;
+				cout << "Nombres : " << nombre1 << " " << nombre2 << endl;
+				cout << "Apellidos : " << apellido1 << " " << apellido2 << endl;
+				cout << "telefono : " << telefono << endl;
+				cout << "direccion : " << direccion << endl;
+				cout << "correo : " << correo << endl;
+				cout << "sexo : ";
+				if (sexToS == "1")
+				{
+					cout << "Masculino" << endl;
+				}
+				else
+				{
+					cout << "Femenino" << endl;
+				};
+				cout << "nacionalidad : ";
+				if (nacioTos == "1")
+				{
+					cout << "Colombiano" << endl;
+				}
+				else
+				{
+					cout << "Extranjero" << endl;
+				};
+				cout << "estado civil : ";
+				if (estTos == "1")
+				{
+					cout << "soltero" << endl;
+				}
+				if (estTos == "2")
+				{
+					cout << "casado" << endl;
+				}
+				if (estTos == "3")
+				{
+					cout << "separado" << endl;
+				}
+				if (estTos == "4")
+				{
+					cout << "viudo" << endl;
+				}
+				cout << "fechaT de nacimiento : " << fechaN << endl;
+				cout << "RH : " << RH << endl;
 
-				cout << "Realmente deseas dar de baja  (s/n)?: ";
+				cout << endl<<"Realmente deseas dar de baja  (s/n)?: ";
 				cin.getline(respuesta, 5);
 
 				if (strcmp(respuesta, "s") == 0 || strcmp(respuesta, "S") == 0 ||
 					strcmp(respuesta, "si") == 0 || strcmp(respuesta, "SI") == 0 ||
 					strcmp(respuesta, "Si") == 0 || strcmp(respuesta, "sI") == 0)
-
 				{
-					cout << "\n\nEl Amigo se ha dado de baja correctamente\n\n";
+					cout << "\n\n\255La hoja de vida se ha eliminado correctamente!\n\n";
 				}
-
 				else
 				{
-					cout << "\n\nCliente conservado\n\n";
-					auxiliar << cedula << "\n"
-							 << nombre1
-							 << "\n"
-							 << nombre2 << "\n"
+					cout << "\n\n\255Hoja de vida conservada!\n\n";
+					auxiliar << cedula << endl
+							 << nombre1 << endl
+							 << nombre2 << endl
+							 << apellido1 << endl
+							 << apellido2 << endl
+							 << telefono << endl
+							 << direccion << endl
+							 << correo << endl
+							 << sexo << endl
+							 << nacionalidad << endl
+							 << estadoCv << endl
+							 << diaN << "-" << mesN << "-" << anoN << endl
+							 << RH << endl
 							 << activo << endl;
 				}
 			}
 			else
 			{
-				auxiliar << cedula << "\n"
-						 << nombre1
-						 << "\n"
-						 << nombre2 << "\n"
+				auxiliar << cedula << endl
+						 << nombre1 << endl
+						 << nombre2 << endl
+						 << apellido1 << endl
+						 << apellido2 << endl
+						 << telefono << endl
+						 << direccion << endl
+						 << correo << endl
+						 << sexo << endl
+						 << nacionalidad << endl
+						 << estadoCv << endl
+						 << diaN << "-" << mesN << "-" << anoN << endl
+						 << RH << endl
 						 << activo << endl;
 			}
 
@@ -748,7 +1149,7 @@ void DBasicos::retirar()
 		}
 		if (encontrado == false)
 		{
-			cout << "\n\nNo se encontr\242 el c\242digo: " << auxCodigo << "\n\n";
+			cout << "\n\nNo se encontr\242 la cedula: " << auxCodigo << "\n\n";
 		}
 	}
 	else
@@ -791,27 +1192,61 @@ void DBasicos::listar()
 			if (activo != "") //( strcmp(activo,"0" == 0 )
 			{
 				cout << "Cedula : " << cedula << endl;
-				cout << "Nombres : " << nombre1<<" "<<nombre2 << endl;
-				cout << "Apellidos : "<< apellido1<<" "<< apellido2<<endl;
-				cout << "telefono : "<<telefono<<endl;
-				cout<< "direccion : "<<direccion<<endl;
-				cout<< "correo : "<<correo<<endl;
-				cout<< "sexo : ";if(sexToS=="1"){cout<<"Masculino"<<endl;}else{cout<<"Femenino"<<endl;};
-				cout<< "nacionalidad : ";if(nacioTos=="1"){cout<<"Colombiano"<<endl;}else{cout<<"Extranjero"<<endl;};
-				cout<< "estado civil : ";if(estTos=="1"){cout<<"soltero"<<endl;}if(estTos=="2"){cout<<"casado"<<endl;}if(estTos=="3"){cout<<"separado"<<endl;}if(estTos=="4"){cout<<"viudo"<<endl;}
-				cout<< "fecha de nacimiento : "<<fechaN<<endl;
-				cout<< "RH : "<<RH<<endl;
+				cout << "Nombres : " << nombre1 << " " << nombre2 << endl;
+				cout << "Apellidos : " << apellido1 << " " << apellido2 << endl;
+				cout << "telefono : " << telefono << endl;
+				cout << "direccion : " << direccion << endl;
+				cout << "correo : " << correo << endl;
+				cout << "sexo : ";
+				if (sexToS == "1")
+				{
+					cout << "Masculino" << endl;
+				}
+				else
+				{
+					cout << "Femenino" << endl;
+				};
+				cout << "nacionalidad : ";
+				if (nacioTos == "1")
+				{
+					cout << "Colombiano" << endl;
+				}
+				else
+				{
+					cout << "Extranjero" << endl;
+				};
+				cout << "estado civil : ";
+				if (estTos == "1")
+				{
+					cout << "soltero" << endl;
+				}
+				if (estTos == "2")
+				{
+					cout << "casado" << endl;
+				}
+				if (estTos == "3")
+				{
+					cout << "separado" << endl;
+				}
+				if (estTos == "4")
+				{
+					cout << "viudo" << endl;
+				}
+				cout << "fechaT de nacimiento : " << fechaN << endl;
+				cout << "RH : " << RH << endl;
 				i++;
 				cout << "\n";
-			}else{
+			}
+			else
+			{
 				error;
 			}
 			getline(lectura, cedula);
 		}
 		if (i == 1)
-			cout << "Hay un solo cliente registrado en este gimnasio\n\n";
+			cout << "Hay una sola persona que ha registrado su hoja de vida\n\n";
 		else
-			cout << "Hay un total de " << i << " clientes registrados en este gimnasio\n\n";
+			cout << "Hay un total de " << i << " personas que han registrado sus hojas de vida\n\n";
 	}
 	else
 	{
@@ -836,8 +1271,7 @@ void Estudios::menu_est()
 		cout << "4. Listar Datos Estudios " << endl;
 		cout << "5. Borrado Logico Estudios" << endl;
 		cout << "6. Acticar Logico Estudios" << endl;
-
-		cout << "0. Salir del Menu" << endl
+		cout << "7. Salir del Menu" << endl
 			 << endl;
 		cout << "Digite Opcion :  ";
 		cin >> opc;
@@ -863,7 +1297,9 @@ void Estudios::menu_est()
 		case 6:
 			activar_logico_est();
 			break;
-
+		case 7:
+			opc=0;
+			break;
 		default:
 			cout << "Ingreso Opcion no valida ";
 		}
@@ -931,14 +1367,14 @@ void Estudios::ingresar_est()
 
 				encontro = 1;
 				cout << "\n\n Digite Instituto : ";
-				getline(cin, instituto);
-				if (instituto == "")
+				getline(cin, entidadEd);
+				if (entidadEd == "")
 				{
 					do
 					{
 						cout << "\n\n Digite Instituto : ";
-						getline(cin, instituto);
-					} while (instituto == "");
+						getline(cin, entidadEd);
+					} while (entidadEd == "");
 				}
 
 				cout << "\n\n Digite titulo : ";
@@ -953,20 +1389,20 @@ void Estudios::ingresar_est()
 				}
 
 				cout << "\n\n Digite Fecha Terminacion : ";
-				getline(cin, fecha);
-				if (fecha == "")
+				getline(cin, fechaT);
+				if (fechaT == "")
 				{
 					do
 					{
 						cout << "\n\n Digite Fecha Terminacion : ";
-						getline(cin, fecha);
-					} while (fecha == "");
+						getline(cin, fechaT);
+					} while (fechaT == "");
 				}
 				cedula = bus_cedula;
 				arIngresar << cedula << endl
-						   << instituto << endl
+						   << entidadEd << endl
 						   << titulo << endl
-						   << fecha << endl;
+						   << fechaT << endl;
 			}
 			getline(lectura, aux1_cedula);
 		}
@@ -1025,15 +1461,15 @@ void Estudios::listar_est()
 
 				while (!leer_est.eof()) // leer mmientras no sea el final del archivo
 				{
-					getline(leer_est, instituto);
+					getline(leer_est, entidadEd);
 					getline(leer_est, titulo);
-					getline(leer_est, fecha);
+					getline(leer_est, fechaT);
 
 					if (aux1_cedula == cedula)
 					{
-						cout << "\n Instituto  : " << instituto;
+						cout << "\n Instituto  : " << entidadEd;
 						cout << "\n Titulo     : " << titulo;
-						cout << "\n Fecha      : " << fecha;
+						cout << "\n Fecha      : " << fechaT;
 					}
 					getline(leer_est, cedula);
 				}
