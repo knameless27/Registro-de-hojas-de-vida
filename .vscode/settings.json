@@ -7,6 +7,7 @@
         "ostream": "cpp",
         "fstream": "cpp",
         "istream": "cpp",
-        "xiosbase": "cpp"
+        "xiosbase": "cpp",
+        "chrono": "cpp"
     }
 }
