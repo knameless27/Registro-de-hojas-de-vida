@@ -5,6 +5,8 @@
 #include <fstream>
 #include <stdlib.h>
 #include <ctime>
+#include <time.h>
+#include <vector>
 #include <ratio>
 #include <chrono>
 
@@ -42,6 +44,7 @@ private:
 	string entidadEd;
 	string titulo;
 	string fechaT;
+	int diaN, mesN, anoN;
 
 public:
 	void ingresar_est();
@@ -1388,15 +1391,46 @@ void Estudios::ingresar_est()
 					} while (titulo == "");
 				}
 
-				cout << "\n\n Digite Fecha Terminacion : ";
-				getline(cin, fechaT);
-				if (fechaT == "")
+				cout << "\n\n Digite el dia de terminacion: ";
+				cin >> diaN;
+
+				cout << endl
+					 << " Digite su mes de terminacion: ";
+				cin >> mesN;
+
+				cout << endl
+					 << " Digite su año de terminacion: ";
+				cin >> anoN;
+
+				auto diatS = std::to_string(diaN);
+				auto mestS = std::to_string(mesN);
+				auto anotS = std::to_string(anoN);
+
+				fechaT = diatS + "-" + mestS + "-" + anotS;
+
+				tm timeinfo = tm();
+				int anotemp = anoN - 1900;
+				timeinfo.tm_mday = diaN;
+				timeinfo.tm_mon = mesN + 1;
+				timeinfo.tm_year = anotemp;
+
+				auto t_x = mktime(&timeinfo);
+				auto tp_x = chrono::system_clock::from_time_t(t_x);
+				auto tp_hoy = chrono::system_clock::now();
+				auto diferencia = tp_hoy - tp_x;
+
+				const int SEGS_POR_DIA = 60 * 60 * 24;
+				typedef chrono::duration<int, ratio<SEGS_POR_DIA>> dias_t;
+				int n_dias = chrono::duration_cast<dias_t>(diferencia).count();
+				system("pause");
+				if (n_dias < 6570)
 				{
-					do
-					{
-						cout << "\n\n Digite Fecha Terminacion : ";
-						getline(cin, fechaT);
-					} while (fechaT == "");
+					cout << endl
+						 << "No se puede postular porque usted es menor de edad!" << endl;
+					return;
+				}else if(n_dias < t_x){
+						
+					return;
 				}
 				cedula = bus_cedula;
 				arIngresar << cedula << endl
