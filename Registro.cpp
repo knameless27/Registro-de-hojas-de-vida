@@ -44,6 +44,7 @@ private:
 	string entidadEd;
 	string titulo;
 	string fechaT;
+	string activoE;
 	int diaN, mesN, anoN;
 
 public:
@@ -66,13 +67,13 @@ private:
 	string fechaTer;
 
 public:
-	void ingresar_est();
-	void retirar_est();
-	void modificar_est();
-	void listar_est();
-	void borrado_logico_est();
-	void activar_logico_est();
-	void menu_est();
+	void ingresar_H();
+	void retirar_H();
+	void modificar_H();
+	void listar_H();
+	void borrado_logico_H();
+	void activar_logico_H();
+	void menu_H();
 };
 void pausa();
 void error();
@@ -1235,7 +1236,7 @@ void DBasicos::listar()
 				{
 					cout << "viudo" << endl;
 				}
-				cout << "fechaT de nacimiento : " << fechaN << endl;
+				cout << "fecha de nacimiento : " << fechaN << endl;
 				cout << "RH : " << RH << endl;
 				i++;
 				cout << "\n";
@@ -1273,7 +1274,7 @@ void Estudios::menu_est()
 		cout << "3. Modificar Datos Estudios" << endl;
 		cout << "4. Listar Datos Estudios " << endl;
 		cout << "5. Borrado Logico Estudios" << endl;
-		cout << "6. Acticar Logico Estudios" << endl;
+		cout << "6. Activar Logico Estudios" << endl;
 		cout << "7. Salir del Menu" << endl
 			 << endl;
 		cout << "Digite Opcion :  ";
@@ -1316,10 +1317,10 @@ void Estudios::ingresar_est()
 
 	string bus_cedula;
 
-	string aux1_nombre;
-	string aux1_codigo;
-	string aux1_cedula;
-	string aux1_activo;
+	string cedula;
+	string entidadEd;
+	string titulo;
+	string fechaT;
 
 	int encontro;
 	encontro = 0;
@@ -1353,21 +1354,13 @@ void Estudios::ingresar_est()
 			} while (bus_cedula == "");
 		}
 
-		getline(lectura, aux1_cedula);
+		getline(lectura, cedula);
 
 		while (!lectura.eof() && encontro == 0)
 		{
-			getline(lectura, aux1_codigo);
-			getline(lectura, aux1_nombre);
-			getline(lectura, aux1_activo);
 
-			// cout <<aux1_cedula <<endl<<aux1_nombre<<endl;
-
-			if (aux1_cedula == bus_cedula)
+			if (cedula == bus_cedula)
 			{
-				cout << aux1_cedula << endl
-					 << aux1_nombre << endl;
-
 				encontro = 1;
 				cout << "\n\n Digite Instituto : ";
 				getline(cin, entidadEd);
@@ -1418,27 +1411,45 @@ void Estudios::ingresar_est()
 				auto tp_x = chrono::system_clock::from_time_t(t_x);
 				auto tp_hoy = chrono::system_clock::now();
 				auto diferencia = tp_hoy - tp_x;
-
+				
 				const int SEGS_POR_DIA = 60 * 60 * 24;
 				typedef chrono::duration<int, ratio<SEGS_POR_DIA>> dias_t;
 				int n_dias = chrono::duration_cast<dias_t>(diferencia).count();
-				system("pause");
-				if (n_dias < 6570)
+
+				timeinfo.tm_mday = 22;
+				timeinfo.tm_mon = 1;
+				timeinfo.tm_year = 122;
+
+				auto t_x1 = mktime(&timeinfo);
+				auto tp_x1 = chrono::system_clock::from_time_t(t_x1);
+				auto tp_hoy1 = chrono::system_clock::now();
+				auto diferenciaHoy = tp_hoy1 - tp_x1;
+				
+				const int SEGS_POR_DIA1 = 60 * 60 * 24;
+				typedef chrono::duration<int, ratio<SEGS_POR_DIA1>> dias_t;
+				int n_diasHoy = chrono::duration_cast<dias_t>(diferenciaHoy).count();
+				if ((n_dias+6570)< 6570)
 				{
 					cout << endl
-						 << "No se puede postular porque usted es menor de edad!" << endl;
-					return;
-				}else if(n_dias < t_x){
-						
+						 << "No se puede postular porque usted ha puesto una fecha incorrecta!" << endl;
 					return;
 				}
+				else if (n_dias < 0)
+				{
+					cout << endl
+						 << "No se puede postular porque usted ha puesto una fecha incorrecta!" << endl;
+					return;
+				}
+				activoE="0";
 				cedula = bus_cedula;
 				arIngresar << cedula << endl
 						   << entidadEd << endl
 						   << titulo << endl
-						   << fechaT << endl;
+						   << fechaT << endl
+						   << activoE << endl;
+				system("pause");
 			}
-			getline(lectura, aux1_cedula);
+			getline(lectura, cedula);
 		}
 		if (encontro == 0)
 		{
@@ -1452,10 +1463,141 @@ void Estudios::ingresar_est()
 
 void Estudios::activar_logico_est()
 {
+	ifstream lectura;
+	ofstream auxiliar;
+
+	bool encontrado = false;
+
+	string auxCodigo;
+	char respuesta[5];
+
+	lectura.open("Estudios.txt", ios::in);
+	auxiliar.open("auxiliar.txt", ios::out);
+
+	cout << "\t\t\t\t*** Dar de baja un Amigo ***\t\t\t\t\n\n";
+	if (lectura.is_open() && auxiliar.is_open())
+	{
+		fflush(stdin);
+		cout << "Activando los Registros Inactivados" << endl;
+		getline(lectura, cedula);
+		while (!lectura.eof())
+		{
+			getline(lectura, entidadEd);
+			getline(lectura, titulo);
+			getline(lectura, fechaT);
+			getline(lectura, activoE);
+
+			activoE = "0";
+			auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+
+			getline(lectura, cedula);
+		}
+		cout << "Fin Proceso de Activando los Registros" << endl;
+	}
+	else
+	{
+		error();
+	}
+	lectura.close();
+	auxiliar.close();
+	remove("Estudios.txt");
+	rename("auxiliar.txt", "Estudios.txt");
+	pausa();
 }
 
 void Estudios::borrado_logico_est()
 {
+	ifstream lectura;
+	ofstream auxiliar;
+
+	bool encontrado = false;
+
+	string auxCodigo;
+	char respuesta[5];
+
+	lectura.open("Estudios.txt", ios::in);
+	auxiliar.open("auxiliar.txt", ios::out);
+
+	cout << "\t\t\t\t*** Eliminar hoja de vida de forma logica ***\t\t\t\t\n\n";
+	if (lectura.is_open() && auxiliar.is_open())
+	{
+		fflush(stdin);
+		cout << "Ingresa la cedula de la persona que deseas eliminar: ";
+		getline(cin, auxCodigo);
+
+		getline(lectura, cedula);
+		while (!lectura.eof())
+		{
+			getline(lectura, entidadEd);
+			getline(lectura, titulo);
+			getline(lectura, fechaT);
+			getline(lectura, activoE);
+
+			if (auxCodigo == cedula && activoE != "")
+			{
+				encontrado = true;
+				cout << "\n\nRegistro Encontrado\n\n";
+				cout << "Cedula : " << cedula << endl;
+				cout << "Entidad educativa : " << entidadEd<<endl;
+				cout << "Titulo : " << titulo<< endl;
+				cout << "Fecha de terminacion : " << fechaT << endl;
+
+				cout << "Realmente deseas dar de Baja-Logico  (s/n)?: ";
+				cin.getline(respuesta, 5);
+
+				if (strcmp(respuesta, "s") == 0 || strcmp(respuesta, "S") == 0 ||
+					strcmp(respuesta, "si") == 0 || strcmp(respuesta, "SI") == 0 ||
+					strcmp(respuesta, "Si") == 0 || strcmp(respuesta, "sI") == 0)
+
+				{
+					cout << "\n\nEl Amigo se ha dado de baja correctamente\n\n";
+					activoE = "";
+					auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+				}
+
+				else
+				{
+					cout << "\n\nCliente conservado\n\n";
+					auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+				}
+			}
+			else
+			{
+				auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+			}
+
+			getline(lectura, cedula);
+		}
+		if (encontrado == false)
+		{
+			cout << "\n\nNo se encontr\242 la cedula: " << auxCodigo << "\n\n";
+		}
+	}
+	else
+	{
+		error();
+	}
+	lectura.close();
+	auxiliar.close();
+	remove("Estudios.txt");
+	rename("auxiliar.txt", "Estudios.txt");
+	pausa();
 }
 
 void Estudios::listar_est()
@@ -1464,10 +1606,13 @@ void Estudios::listar_est()
 	ifstream lectura;
 	ifstream leer_est;
 
-	string aux1_nombre;
-	string aux1_codigo;
-	string aux1_cedula;
-	string aux1_activo;
+	string cedulaAux, nombre1Aux, nombre2Aux, apellido1Aux, apellido2Aux, telefonoAux, direccionAux, correoAux, SextoSAux, nacioToSAux, estToSAux, fechaNAux, RHAux, activoAux;
+
+	string cedulaAx;
+	string entidadEdAx;
+	string tituloAx;
+	string fechaTAx;
+	string activoEAx;
 
 	lectura.open("DBasicos.txt", ios::in);
 	leer_est.open("Estudios.txt", ios::in);
@@ -1475,44 +1620,103 @@ void Estudios::listar_est()
 	if (lectura.is_open() && leer_est.is_open()) // validamos que no presente error en la apertura del archivo
 	{
 
-		cout << "\t\t\t\t***Listado de todos los clientes***\t\t\t\t\n\n";
-		getline(lectura, aux1_cedula);
-
+		cout << "\t\t\t\t***Listado de todos los registros***\t\t\t\t\n\n";
+		getline(lectura, cedulaAux);
 		while (!lectura.eof()) // leer mmientras no sea el final del archivo
 		{
-			getline(lectura, aux1_codigo);
-			getline(lectura, aux1_nombre);
-			getline(lectura, aux1_activo);
+			getline(lectura, nombre1Aux);
+			getline(lectura, nombre2Aux);
+			getline(lectura, apellido1Aux);
+			getline(lectura, apellido2Aux);
+			getline(lectura, telefonoAux);
+			getline(lectura, direccionAux);
+			getline(lectura, correoAux);
+			getline(lectura, SextoSAux);
+			getline(lectura, nacioToSAux);
+			getline(lectura, estToSAux);
+			getline(lectura, fechaNAux);
+			getline(lectura, RHAux);
+			getline(lectura, activoAux);
 
-			if (aux1_activo == "0") //( strcmp(activo,"0" == 0 )
+			if (activoAux != "") //( strcmp(activo,"0" == 0 )
 			{
-				cout << "Cedula : " << aux1_cedula << endl;
-				cout << "C\242digo : " << aux1_codigo << endl;
-				cout << "Nombre : " << aux1_nombre << endl;
-				i++;
-
-				getline(leer_est, cedula);
+				cout<<"Datos de "<<nombre1Aux<<": "<<endl<<endl;
+				cout << "Cedula : " << cedulaAux << endl;
+				cout << "Nombres : " << nombre1Aux << " " << nombre2Aux << endl;
+				cout << "Apellidos : " << apellido1Aux << " " << apellido2Aux << endl;
+				cout << "telefono : " << telefonoAux << endl;
+				cout << "direccion : " << direccionAux << endl;
+				cout << "correo : " << correoAux << endl;
+				cout << "sexo : ";
+				if (SextoSAux == "1")
+				{
+					cout << "Masculino" << endl;
+				}
+				else
+				{
+					cout << "Femenino" << endl;
+				};
+				cout << "nacionalidad : ";
+				if (nacioToSAux == "1")
+				{
+					cout << "Colombiano" << endl;
+				}
+				else
+				{
+					cout << "Extranjero" << endl;
+				};
+				cout << "estado civil : ";
+				if (estToSAux == "1")
+				{
+					cout << "soltero" << endl;
+				}
+				if (estToSAux == "2")
+				{
+					cout << "casado" << endl;
+				}
+				if (estToSAux == "3")
+				{
+					cout << "separado" << endl;
+				}
+				if (estToSAux == "4")
+				{
+					cout << "viudo" << endl;
+				}
+				cout << "fecha de nacimiento : " << fechaNAux << endl;
+				cout << "RH : " << RHAux << endl;
+				cout << "\n";
+				
+				getline(leer_est, cedulaAx);
 
 				while (!leer_est.eof()) // leer mmientras no sea el final del archivo
 				{
-					getline(leer_est, entidadEd);
-					getline(leer_est, titulo);
-					getline(leer_est, fechaT);
+					getline(leer_est, entidadEdAx);
+					getline(leer_est, tituloAx);
+					getline(leer_est, fechaTAx);
+					getline(leer_est, activoE);
 
-					if (aux1_cedula == cedula)
+					if (cedulaAux == cedulaAx)
 					{
-						cout << "\n Instituto  : " << entidadEd;
-						cout << "\n Titulo     : " << titulo;
-						cout << "\n Fecha      : " << fechaT;
+						if(activoE!="")
+						{
+							cout << "____________________________________________" << endl;
+							cout << "Estudios de " << nombre1Aux << ":" << endl
+								 << endl;
+							cout << "cedula : " << cedulaAx << endl;
+							cout << "Entidad educativa : " << entidadEdAx << endl;
+							cout << "Titulo : " << tituloAx << endl;
+							cout << "Fecha de terminacion : " << fechaTAx << endl;
+							cout << "--------------------------------------------" << endl;
+						}
 					}
-					getline(leer_est, cedula);
+					getline(leer_est, cedulaAx);
 				}
 				cout << "\n";
 				leer_est.close();
 				leer_est.open("Estudios.txt", ios::in);
 			}
-			getline(lectura, aux1_cedula);
-		}
+			getline(lectura, cedulaAux);
+		}		
 	}
 	else
 	{
@@ -1525,10 +1729,911 @@ void Estudios::listar_est()
 
 void Estudios::modificar_est()
 {
+	ifstream lectura;
+	ofstream auxiliar;
+
+	bool encontrado = false;
+
+	string auxCodigo;
+	string tempCed;
+	char respuesta[5];
+	int opt = 0;
+
+	lectura.open("Estudios.txt", ios::in);
+	auxiliar.open("auxiliar.txt", ios::out);
+
+	cout << "\t\t\t\t\255Modificar datos!\t\t\t\t\n\n";
+	if (lectura.is_open() && auxiliar.is_open())
+	{
+		fflush(stdin);
+		cout << "Digite la cedula de la persona a modificar: ";
+		getline(cin, auxCodigo);
+
+		getline(lectura, cedula);
+		while (!lectura.eof())
+		{
+			getline(lectura, entidadEd);
+			getline(lectura, titulo);
+			getline(lectura, fechaT);
+			getline(lectura, activoE);
+
+			if (auxCodigo == cedula && activoE != "")
+			{
+				encontrado = true;
+				cout << "\n\nRegistro Encontrado\n\n";
+				cout << "Cedula : " << cedula << endl;
+				cout << "Entidad educativa : " << entidadEd<<endl;
+				cout << "Titulo : " << titulo<< endl;
+				cout << "Fecha de terminacion : " << fechaT << endl;
+				
+				cout << endl<<"MODIFICANDO DATOS DEL REGISTRO";
+
+				tempCed=cedula;
+
+				cout << "\n\n Digite Instituto : ";
+				getline(cin, entidadEd);
+				if (entidadEd == "")
+				{
+					do
+					{
+						cout << "\n\n Digite Instituto : ";
+						getline(cin, entidadEd);
+					} while (entidadEd == "");
+				}
+
+				cout << "\n\n Digite titulo : ";
+				getline(cin, titulo);
+				if (titulo == "")
+				{
+					do
+					{
+						cout << "\n\n Digite Titulo : ";
+						getline(cin, titulo);
+					} while (titulo == "");
+				}
+
+				cout << "\n\n Digite el dia de terminacion: ";
+				cin >> diaN;
+
+				cout << endl
+					 << " Digite su mes de terminacion: ";
+				cin >> mesN;
+
+				cout << endl
+					 << " Digite su año de terminacion: ";
+				cin >> anoN;
+
+				auto diatS = std::to_string(diaN);
+				auto mestS = std::to_string(mesN);
+				auto anotS = std::to_string(anoN);
+
+				fechaT = diatS + "-" + mestS + "-" + anotS;
+
+				tm timeinfo = tm();
+				int anotemp = anoN - 1900;
+				timeinfo.tm_mday = diaN;
+				timeinfo.tm_mon = mesN + 1;
+				timeinfo.tm_year = anotemp;
+
+				auto t_x = mktime(&timeinfo);
+				auto tp_x = chrono::system_clock::from_time_t(t_x);
+				auto tp_hoy = chrono::system_clock::now();
+				auto diferencia = tp_hoy - tp_x;
+				
+				const int SEGS_POR_DIA = 60 * 60 * 24;
+				typedef chrono::duration<int, ratio<SEGS_POR_DIA>> dias_t;
+				int n_dias = chrono::duration_cast<dias_t>(diferencia).count();
+
+				if ((n_dias+6570)< 6570)//fecha de nacimiento
+				{
+					cout << endl
+						 << "No se puede modificar porque usted ha puesto una fecha incorrecta!" << endl;
+						 system("pause");
+					return;
+				}else if(n_dias < 0){ //verificar fecha de hoy
+						cout << endl
+						 << "No se puede modificar porque usted ha puesto una fecha incorrecta!" << endl;
+						 system("pause");
+					return;
+				}
+
+				auxiliar << tempCed << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+			}
+			else
+			{
+				auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+			}
+			getline(lectura, cedula);
+		}
+		if (encontrado == false)
+		{
+			cout << "\n\nNo se encontr\242 la cedula: " << auxCodigo << "\n\n";
+		}
+	}
+	lectura.close();
+	auxiliar.close();
+	remove("Estudios.txt");
+	rename("auxiliar.txt", "Estudios.txt");
+	pausa();
 }
 
 void Estudios::retirar_est()
 {
+	ifstream lectura;
+	ofstream auxiliar;
+
+	bool encontrado = false;
+
+	string auxCodigo;
+	char respuesta[5];
+
+	lectura.open("Estudios.txt", ios::in);
+	auxiliar.open("auxiliar.txt", ios::out);
+
+	cout << "\t\t\t\t*** Eliminar una hoja de vida ***\t\t\t\t\n\n";
+	if (lectura.is_open() && auxiliar.is_open())
+	{
+		fflush(stdin);
+		cout << "Ingresa la cedula del registro que deseas dar eliminar: ";
+		getline(cin, auxCodigo);
+
+		getline(lectura, cedula);
+		while (!lectura.eof())
+		{
+			getline(lectura, entidadEd);
+			getline(lectura, titulo);
+			getline(lectura, fechaT);
+			getline(lectura, activoE);
+
+			if (auxCodigo == cedula)
+			{
+				encontrado = true;
+				cout << "\n\nRegistro Encontrado\n\n";
+				cout << "Cedula : " << cedula << endl;
+				cout << "Entidad educativa : " << entidadEd<<endl;
+				cout << "Titulo : " << titulo<< endl;
+				cout << "Fecha de terminacion : " << fechaT << endl;
+
+				cout << endl<<"Realmente deseas dar de baja  (s/n)?: ";
+				cin.getline(respuesta, 5);
+
+				if (strcmp(respuesta, "s") == 0 || strcmp(respuesta, "S") == 0 ||
+					strcmp(respuesta, "si") == 0 || strcmp(respuesta, "SI") == 0 ||
+					strcmp(respuesta, "Si") == 0 || strcmp(respuesta, "sI") == 0)
+				{
+					cout << "\n\n\255La hoja de vida se ha eliminado correctamente!\n\n";
+				}
+				else
+				{
+					cout << "\n\n\255Hoja de vida conservada!\n\n";
+					auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+				}
+			}
+			else
+			{
+				auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+			}
+
+			getline(lectura, cedula);
+		}
+		if (encontrado == false)
+		{
+			cout << "\n\nNo se encontr\242 la cedula: " << auxCodigo << "\n\n";
+		}
+	}
+	else
+	{
+		error();
+	}
+	lectura.close();
+	auxiliar.close();
+	remove("Estudios.txt");
+	rename("auxiliar.txt", "Estudios.txt");
+	pausa();
+}
+
+void HLaboral::menu_H()
+{
+	int opc;
+	opc = 9;
+	do
+	{
+		system(CLEAR);
+		cout << "\n REGISTRAR DATOS ESTUDIOS " << endl
+			 << endl;
+		cout << "1. Ingresar Datos Estudios" << endl;
+		cout << "2. Retirar Datos Estudios" << endl;
+		cout << "3. Modificar Datos Estudios" << endl;
+		cout << "4. Listar Datos Estudios " << endl;
+		cout << "5. Borrado Logico Estudios" << endl;
+		cout << "6. Activar Logico Estudios" << endl;
+		cout << "7. Salir del Menu" << endl
+			 << endl;
+		cout << "Digite Opcion :  ";
+		cin >> opc;
+		fflush(stdin);
+
+		switch (opc)
+		{
+		case 1:
+			ingresar_H();
+			break;
+		case 2:
+			retirar_H();
+			break;
+		case 3:
+			modificar_H();
+			break;
+		case 4:
+			listar_H();
+			break;
+		case 5:
+			borrado_logico_H();
+			break;
+		case 6:
+			activar_logico_H();
+			break;
+		case 7:
+			opc=0;
+			break;
+		default:
+			cout << "Ingreso Opcion no valida ";
+		}
+	} while (opc != 0);
+}
+
+void HLaboral::ingresar_H()
+{
+	ofstream arIngresar; // estudios
+	ifstream lectura;	 // Datos DBasicos
+
+	string bus_cedula;
+
+	string cedula;
+	string entidadEd;
+	string titulo;
+	string fechaT;
+
+	int encontro;
+	encontro = 0;
+
+	lectura.open("DBasicos.txt", ios::in);
+	arIngresar.open("Estudios.txt", ios::app);
+	if (arIngresar.is_open())
+	{
+		cout << "Estudios";
+	}
+	else
+	{
+		arIngresar.close();
+		ofstream escribir_est;
+		arIngresar.open("Estudios.txt", ios::out);
+	}
+
+	if (arIngresar.is_open() && lectura.is_open()) // Validamos que el archivo "arIngresar no presento error
+	{
+		cout << "\n\n Digite Datos de Estudios ";
+		cout << "\n\n Digite Cedula  : ";
+		getline(cin, bus_cedula);
+		fflush(stdin);
+
+		if (bus_cedula == "") // validamos que el nombre2 no este vacio
+		{
+			do
+			{
+				cout << "\n\n Digite Cedula : ";
+				getline(cin, bus_cedula);
+			} while (bus_cedula == "");
+		}
+
+		getline(lectura, cedula);
+
+		while (!lectura.eof() && encontro == 0)
+		{
+
+			if (cedula == bus_cedula)
+			{
+				encontro = 1;
+				cout << "\n\n Digite Instituto : ";
+				getline(cin, entidadEd);
+				if (entidadEd == "")
+				{
+					do
+					{
+						cout << "\n\n Digite Instituto : ";
+						getline(cin, entidadEd);
+					} while (entidadEd == "");
+				}
+
+				cout << "\n\n Digite titulo : ";
+				getline(cin, titulo);
+				if (titulo == "")
+				{
+					do
+					{
+						cout << "\n\n Digite Titulo : ";
+						getline(cin, titulo);
+					} while (titulo == "");
+				}
+
+				cout << "\n\n Digite el dia de terminacion: ";
+				cin >> diaN;
+
+				cout << endl
+					 << " Digite su mes de terminacion: ";
+				cin >> mesN;
+
+				cout << endl
+					 << " Digite su año de terminacion: ";
+				cin >> anoN;
+
+				auto diatS = std::to_string(diaN);
+				auto mestS = std::to_string(mesN);
+				auto anotS = std::to_string(anoN);
+
+				fechaT = diatS + "-" + mestS + "-" + anotS;
+
+				tm timeinfo = tm();
+				int anotemp = anoN - 1900;
+				timeinfo.tm_mday = diaN;
+				timeinfo.tm_mon = mesN + 1;
+				timeinfo.tm_year = anotemp;
+
+				auto t_x = mktime(&timeinfo);
+				auto tp_x = chrono::system_clock::from_time_t(t_x);
+				auto tp_hoy = chrono::system_clock::now();
+				auto diferencia = tp_hoy - tp_x;
+				
+				const int SEGS_POR_DIA = 60 * 60 * 24;
+				typedef chrono::duration<int, ratio<SEGS_POR_DIA>> dias_t;
+				int n_dias = chrono::duration_cast<dias_t>(diferencia).count();
+
+				timeinfo.tm_mday = 22;
+				timeinfo.tm_mon = 1;
+				timeinfo.tm_year = 122;
+
+				auto t_x1 = mktime(&timeinfo);
+				auto tp_x1 = chrono::system_clock::from_time_t(t_x1);
+				auto tp_hoy1 = chrono::system_clock::now();
+				auto diferenciaHoy = tp_hoy1 - tp_x1;
+				
+				const int SEGS_POR_DIA1 = 60 * 60 * 24;
+				typedef chrono::duration<int, ratio<SEGS_POR_DIA1>> dias_t;
+				int n_diasHoy = chrono::duration_cast<dias_t>(diferenciaHoy).count();
+				if ((n_dias+6570)< 6570)
+				{
+					cout << endl
+						 << "No se puede postular porque usted ha puesto una fecha incorrecta!" << endl;
+					return;
+				}
+				else if (n_dias < 0)
+				{
+					cout << endl
+						 << "No se puede postular porque usted ha puesto una fecha incorrecta!" << endl;
+					return;
+				}
+				activoE="0";
+				cedula = bus_cedula;
+				arIngresar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+				system("pause");
+			}
+			getline(lectura, cedula);
+		}
+		if (encontro == 0)
+		{
+			cout << "\n\n Cedula no existe en el archivo";
+			getch();
+		}
+	}
+	arIngresar.close();
+	lectura.close();
+}
+
+void HLaboral::activar_logico_H()
+{
+	ifstream lectura;
+	ofstream auxiliar;
+
+	bool encontrado = false;
+
+	string auxCodigo;
+	char respuesta[5];
+
+	lectura.open("Estudios.txt", ios::in);
+	auxiliar.open("auxiliar.txt", ios::out);
+
+	cout << "\t\t\t\t*** Dar de baja un Amigo ***\t\t\t\t\n\n";
+	if (lectura.is_open() && auxiliar.is_open())
+	{
+		fflush(stdin);
+		cout << "Activando los Registros Inactivados" << endl;
+		getline(lectura, cedula);
+		while (!lectura.eof())
+		{
+			getline(lectura, entidadEd);
+			getline(lectura, titulo);
+			getline(lectura, fechaT);
+			getline(lectura, activoE);
+
+			activoE = "0";
+			auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+
+			getline(lectura, cedula);
+		}
+		cout << "Fin Proceso de Activando los Registros" << endl;
+	}
+	else
+	{
+		error();
+	}
+	lectura.close();
+	auxiliar.close();
+	remove("Estudios.txt");
+	rename("auxiliar.txt", "Estudios.txt");
+	pausa();
+}
+
+void HLaboral::borrado_logico_H()
+{
+	ifstream lectura;
+	ofstream auxiliar;
+
+	bool encontrado = false;
+
+	string auxCodigo;
+	char respuesta[5];
+
+	lectura.open("Estudios.txt", ios::in);
+	auxiliar.open("auxiliar.txt", ios::out);
+
+	cout << "\t\t\t\t*** Eliminar hoja de vida de forma logica ***\t\t\t\t\n\n";
+	if (lectura.is_open() && auxiliar.is_open())
+	{
+		fflush(stdin);
+		cout << "Ingresa la cedula de la persona que deseas eliminar: ";
+		getline(cin, auxCodigo);
+
+		getline(lectura, cedula);
+		while (!lectura.eof())
+		{
+			getline(lectura, entidadEd);
+			getline(lectura, titulo);
+			getline(lectura, fechaT);
+			getline(lectura, activoE);
+
+			if (auxCodigo == cedula && activoE != "")
+			{
+				encontrado = true;
+				cout << "\n\nRegistro Encontrado\n\n";
+				cout << "Cedula : " << cedula << endl;
+				cout << "Entidad educativa : " << entidadEd<<endl;
+				cout << "Titulo : " << titulo<< endl;
+				cout << "Fecha de terminacion : " << fechaT << endl;
+
+				cout << "Realmente deseas dar de Baja-Logico  (s/n)?: ";
+				cin.getline(respuesta, 5);
+
+				if (strcmp(respuesta, "s") == 0 || strcmp(respuesta, "S") == 0 ||
+					strcmp(respuesta, "si") == 0 || strcmp(respuesta, "SI") == 0 ||
+					strcmp(respuesta, "Si") == 0 || strcmp(respuesta, "sI") == 0)
+
+				{
+					cout << "\n\nEl Amigo se ha dado de baja correctamente\n\n";
+					activoE = "";
+					auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+				}
+
+				else
+				{
+					cout << "\n\nCliente conservado\n\n";
+					auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+				}
+			}
+			else
+			{
+				auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+			}
+
+			getline(lectura, cedula);
+		}
+		if (encontrado == false)
+		{
+			cout << "\n\nNo se encontr\242 la cedula: " << auxCodigo << "\n\n";
+		}
+	}
+	else
+	{
+		error();
+	}
+	lectura.close();
+	auxiliar.close();
+	remove("Estudios.txt");
+	rename("auxiliar.txt", "Estudios.txt");
+	pausa();
+}
+
+void HLaboral::listar_H()
+{
+	int i = 0;
+	ifstream lectura;
+	ifstream leer_est;
+
+	string cedulaAux, nombre1Aux, nombre2Aux, apellido1Aux, apellido2Aux, telefonoAux, direccionAux, correoAux, SextoSAux, nacioToSAux, estToSAux, fechaNAux, RHAux, activoAux;
+
+	string cedulaAx;
+	string entidadEdAx;
+	string tituloAx;
+	string fechaTAx;
+	string activoEAx;
+
+	lectura.open("DBasicos.txt", ios::in);
+	leer_est.open("Estudios.txt", ios::in);
+
+	if (lectura.is_open() && leer_est.is_open()) // validamos que no presente error en la apertura del archivo
+	{
+
+		cout << "\t\t\t\t***Listado de todos los registros***\t\t\t\t\n\n";
+		getline(lectura, cedulaAux);
+		while (!lectura.eof()) // leer mmientras no sea el final del archivo
+		{
+			getline(lectura, nombre1Aux);
+			getline(lectura, nombre2Aux);
+			getline(lectura, apellido1Aux);
+			getline(lectura, apellido2Aux);
+			getline(lectura, telefonoAux);
+			getline(lectura, direccionAux);
+			getline(lectura, correoAux);
+			getline(lectura, SextoSAux);
+			getline(lectura, nacioToSAux);
+			getline(lectura, estToSAux);
+			getline(lectura, fechaNAux);
+			getline(lectura, RHAux);
+			getline(lectura, activoAux);
+
+			if (activoAux != "") //( strcmp(activo,"0" == 0 )
+			{
+				cout<<"Datos de "<<nombre1Aux<<": "<<endl<<endl;
+				cout << "Cedula : " << cedulaAux << endl;
+				cout << "Nombres : " << nombre1Aux << " " << nombre2Aux << endl;
+				cout << "Apellidos : " << apellido1Aux << " " << apellido2Aux << endl;
+				cout << "telefono : " << telefonoAux << endl;
+				cout << "direccion : " << direccionAux << endl;
+				cout << "correo : " << correoAux << endl;
+				cout << "sexo : ";
+				if (SextoSAux == "1")
+				{
+					cout << "Masculino" << endl;
+				}
+				else
+				{
+					cout << "Femenino" << endl;
+				};
+				cout << "nacionalidad : ";
+				if (nacioToSAux == "1")
+				{
+					cout << "Colombiano" << endl;
+				}
+				else
+				{
+					cout << "Extranjero" << endl;
+				};
+				cout << "estado civil : ";
+				if (estToSAux == "1")
+				{
+					cout << "soltero" << endl;
+				}
+				if (estToSAux == "2")
+				{
+					cout << "casado" << endl;
+				}
+				if (estToSAux == "3")
+				{
+					cout << "separado" << endl;
+				}
+				if (estToSAux == "4")
+				{
+					cout << "viudo" << endl;
+				}
+				cout << "fecha de nacimiento : " << fechaNAux << endl;
+				cout << "RH : " << RHAux << endl;
+				cout << "\n";
+				
+				getline(leer_est, cedulaAx);
+
+				while (!leer_est.eof()) // leer mmientras no sea el final del archivo
+				{
+					getline(leer_est, entidadEdAx);
+					getline(leer_est, tituloAx);
+					getline(leer_est, fechaTAx);
+					getline(leer_est, activoE);
+
+					if (cedulaAux == cedulaAx)
+					{
+						if(activoE!="")
+						{
+							cout << "____________________________________________" << endl;
+							cout << "Estudios de " << nombre1Aux << ":" << endl
+								 << endl;
+							cout << "cedula : " << cedulaAx << endl;
+							cout << "Entidad educativa : " << entidadEdAx << endl;
+							cout << "Titulo : " << tituloAx << endl;
+							cout << "Fecha de terminacion : " << fechaTAx << endl;
+							cout << "--------------------------------------------" << endl;
+						}
+					}
+					getline(leer_est, cedulaAx);
+				}
+				cout << "\n";
+				leer_est.close();
+				leer_est.open("Estudios.txt", ios::in);
+			}
+			getline(lectura, cedulaAux);
+		}		
+	}
+	else
+	{
+		error();
+	}
+	lectura.close();
+	leer_est.close();
+	pausa();
+}
+
+void HLaboral::modificar_H()
+{
+	ifstream lectura;
+	ofstream auxiliar;
+
+	bool encontrado = false;
+
+	string auxCodigo;
+	string tempCed;
+	char respuesta[5];
+	int opt = 0;
+
+	lectura.open("Estudios.txt", ios::in);
+	auxiliar.open("auxiliar.txt", ios::out);
+
+	cout << "\t\t\t\t\255Modificar datos!\t\t\t\t\n\n";
+	if (lectura.is_open() && auxiliar.is_open())
+	{
+		fflush(stdin);
+		cout << "Digite la cedula de la persona a modificar: ";
+		getline(cin, auxCodigo);
+
+		getline(lectura, cedula);
+		while (!lectura.eof())
+		{
+			getline(lectura, entidadEd);
+			getline(lectura, titulo);
+			getline(lectura, fechaT);
+			getline(lectura, activoE);
+
+			if (auxCodigo == cedula && activoE != "")
+			{
+				encontrado = true;
+				cout << "\n\nRegistro Encontrado\n\n";
+				cout << "Cedula : " << cedula << endl;
+				cout << "Entidad educativa : " << entidadEd<<endl;
+				cout << "Titulo : " << titulo<< endl;
+				cout << "Fecha de terminacion : " << fechaT << endl;
+				
+				cout << endl<<"MODIFICANDO DATOS DEL REGISTRO";
+
+				tempCed=cedula;
+
+				cout << "\n\n Digite Instituto : ";
+				getline(cin, entidadEd);
+				if (entidadEd == "")
+				{
+					do
+					{
+						cout << "\n\n Digite Instituto : ";
+						getline(cin, entidadEd);
+					} while (entidadEd == "");
+				}
+
+				cout << "\n\n Digite titulo : ";
+				getline(cin, titulo);
+				if (titulo == "")
+				{
+					do
+					{
+						cout << "\n\n Digite Titulo : ";
+						getline(cin, titulo);
+					} while (titulo == "");
+				}
+
+				cout << "\n\n Digite el dia de terminacion: ";
+				cin >> diaN;
+
+				cout << endl
+					 << " Digite su mes de terminacion: ";
+				cin >> mesN;
+
+				cout << endl
+					 << " Digite su año de terminacion: ";
+				cin >> anoN;
+
+				auto diatS = std::to_string(diaN);
+				auto mestS = std::to_string(mesN);
+				auto anotS = std::to_string(anoN);
+
+				fechaT = diatS + "-" + mestS + "-" + anotS;
+
+				tm timeinfo = tm();
+				int anotemp = anoN - 1900;
+				timeinfo.tm_mday = diaN;
+				timeinfo.tm_mon = mesN + 1;
+				timeinfo.tm_year = anotemp;
+
+				auto t_x = mktime(&timeinfo);
+				auto tp_x = chrono::system_clock::from_time_t(t_x);
+				auto tp_hoy = chrono::system_clock::now();
+				auto diferencia = tp_hoy - tp_x;
+				
+				const int SEGS_POR_DIA = 60 * 60 * 24;
+				typedef chrono::duration<int, ratio<SEGS_POR_DIA>> dias_t;
+				int n_dias = chrono::duration_cast<dias_t>(diferencia).count();
+
+				if ((n_dias+6570)< 6570)//fecha de nacimiento
+				{
+					cout << endl
+						 << "No se puede modificar porque usted ha puesto una fecha incorrecta!" << endl;
+						 system("pause");
+					return;
+				}else if(n_dias < 0){ //verificar fecha de hoy
+						cout << endl
+						 << "No se puede modificar porque usted ha puesto una fecha incorrecta!" << endl;
+						 system("pause");
+					return;
+				}
+
+				auxiliar << tempCed << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+			}
+			else
+			{
+				auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+			}
+			getline(lectura, cedula);
+		}
+		if (encontrado == false)
+		{
+			cout << "\n\nNo se encontr\242 la cedula: " << auxCodigo << "\n\n";
+		}
+	}
+	lectura.close();
+	auxiliar.close();
+	remove("Estudios.txt");
+	rename("auxiliar.txt", "Estudios.txt");
+	pausa();
+}
+
+void HLaboral::retirar_H()
+{
+	ifstream lectura;
+	ofstream auxiliar;
+
+	bool encontrado = false;
+
+	string auxCodigo;
+	char respuesta[5];
+
+	lectura.open("Estudios.txt", ios::in);
+	auxiliar.open("auxiliar.txt", ios::out);
+
+	cout << "\t\t\t\t*** Eliminar una hoja de vida ***\t\t\t\t\n\n";
+	if (lectura.is_open() && auxiliar.is_open())
+	{
+		fflush(stdin);
+		cout << "Ingresa la cedula del registro que deseas dar eliminar: ";
+		getline(cin, auxCodigo);
+
+		getline(lectura, cedula);
+		while (!lectura.eof())
+		{
+			getline(lectura, entidadEd);
+			getline(lectura, titulo);
+			getline(lectura, fechaT);
+			getline(lectura, activoE);
+
+			if (auxCodigo == cedula)
+			{
+				encontrado = true;
+				cout << "\n\nRegistro Encontrado\n\n";
+				cout << "Cedula : " << cedula << endl;
+				cout << "Entidad educativa : " << entidadEd<<endl;
+				cout << "Titulo : " << titulo<< endl;
+				cout << "Fecha de terminacion : " << fechaT << endl;
+
+				cout << endl<<"Realmente deseas dar de baja  (s/n)?: ";
+				cin.getline(respuesta, 5);
+
+				if (strcmp(respuesta, "s") == 0 || strcmp(respuesta, "S") == 0 ||
+					strcmp(respuesta, "si") == 0 || strcmp(respuesta, "SI") == 0 ||
+					strcmp(respuesta, "Si") == 0 || strcmp(respuesta, "sI") == 0)
+				{
+					cout << "\n\n\255La hoja de vida se ha eliminado correctamente!\n\n";
+				}
+				else
+				{
+					cout << "\n\n\255Hoja de vida conservada!\n\n";
+					auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+				}
+			}
+			else
+			{
+				auxiliar << cedula << endl
+						   << entidadEd << endl
+						   << titulo << endl
+						   << fechaT << endl
+						   << activoE << endl;
+			}
+
+			getline(lectura, cedula);
+		}
+		if (encontrado == false)
+		{
+			cout << "\n\nNo se encontr\242 la cedula: " << auxCodigo << "\n\n";
+		}
+	}
+	else
+	{
+		error();
+	}
+	lectura.close();
+	auxiliar.close();
+	remove("Estudios.txt");
+	rename("auxiliar.txt", "Estudios.txt");
+	pausa();
 }
 
 main()
