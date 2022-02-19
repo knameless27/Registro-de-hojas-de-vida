@@ -97,7 +97,7 @@ void DBasicos::menu()
 		cout << "6. Activar Logico " << endl;
 		cout << "7. Salir del Menu" << endl
 			 << endl;
-		cout << "Digite Opcion :  ";
+		cout << "Digite una opcion :  ";
 		cin >> opc;
 		fflush(stdin);
 
@@ -166,7 +166,7 @@ void DBasicos::ingresar()
 			} while (nombre1 == "");
 		}
 
-		cout << "\n\n Digite su segundo nombre : ";
+		cout << "\n\n Digite su segundo nombre: ";
 		getline(cin, nombre2);
 
 		if (nombre2 == "")
@@ -410,6 +410,8 @@ void DBasicos::ingresar()
 
 void DBasicos::modificar()
 {
+	system(CLEAR);
+	
 	ifstream lectura;
 	ofstream auxiliar;
 
@@ -790,6 +792,8 @@ void DBasicos::modificar()
 
 void DBasicos::borrado_logico()
 {
+	system(CLEAR);
+
 	ifstream lectura;
 	ofstream auxiliar;
 
@@ -956,6 +960,8 @@ void DBasicos::borrado_logico()
 
 void DBasicos::activar_logico()
 {
+	system(CLEAR);
+
 	ifstream lectura;
 	ofstream auxiliar;
 
@@ -1022,6 +1028,8 @@ void DBasicos::activar_logico()
 
 void DBasicos::retirar()
 {
+	system(CLEAR);
+
 	ifstream lectura;
 	ofstream auxiliar;
 
@@ -1171,6 +1179,8 @@ void DBasicos::retirar()
 
 void DBasicos::listar()
 {
+	system(CLEAR);
+
 	int i = 0;
 	ifstream lectura;
 	lectura.open("DBasicos.txt", ios::in);
@@ -1269,14 +1279,14 @@ void Estudios::menu_est()
 	do
 	{
 		system(CLEAR);
-		cout << "\n REGISTRAR DATOS ESTUDIOS " << endl
+		cout << "\n REGISTRAR DATOS DE ESTUDIOS " << endl
 			 << endl;
-		cout << "1. Ingresar Datos Estudios" << endl;
-		cout << "2. Retirar Datos Estudios" << endl;
-		cout << "3. Modificar Datos Estudios" << endl;
-		cout << "4. Listar Datos Estudios " << endl;
-		cout << "5. Borrado Logico Estudios" << endl;
-		cout << "6. Activar Logico Estudios" << endl;
+		cout << "1. Ingresar Datos de Estudios" << endl;
+		cout << "2. Retirar Datos de Estudios" << endl;
+		cout << "3. Modificar Datos de Estudios" << endl;
+		cout << "4. Listar Datos de Estudios " << endl;
+		cout << "5. Borrado Logico de Estudios" << endl;
+		cout << "6. Activar Logico de Estudios" << endl;
 		cout << "7. Salir del Menu" << endl
 			 << endl;
 		cout << "Digite Opcion :  ";
@@ -1314,6 +1324,8 @@ void Estudios::menu_est()
 
 void Estudios::ingresar_est()
 {
+	system(CLEAR);
+
 	ofstream arIngresar; // estudios
 	ifstream lectura;	 // Datos DBasicos
 
@@ -1465,6 +1477,8 @@ void Estudios::ingresar_est()
 
 void Estudios::activar_logico_est()
 {
+	system(CLEAR);
+
 	ifstream lectura;
 	ofstream auxiliar;
 
@@ -1476,11 +1490,11 @@ void Estudios::activar_logico_est()
 	lectura.open("Estudios.txt", ios::in);
 	auxiliar.open("auxiliar.txt", ios::out);
 
-	cout << "\t\t\t\t*** Dar de baja un Amigo ***\t\t\t\t\n\n";
+	cout << "\t\t\t\t*** Activar de forma logica a un estudiante ***\t\t\t\t\n\n";
 	if (lectura.is_open() && auxiliar.is_open())
 	{
 		fflush(stdin);
-		cout << "Activando los Registros Inactivados" << endl;
+		cout << "Activando los Registros Inactivos" << endl;
 		getline(lectura, cedula);
 		while (!lectura.eof())
 		{
@@ -1498,7 +1512,7 @@ void Estudios::activar_logico_est()
 
 			getline(lectura, cedula);
 		}
-		cout << "Fin Proceso de Activando los Registros" << endl;
+		cout << "\255La activacion de registros ha concluido!" << endl;
 	}
 	else
 	{
@@ -1513,6 +1527,8 @@ void Estudios::activar_logico_est()
 
 void Estudios::borrado_logico_est()
 {
+	system(CLEAR);
+
 	ifstream lectura;
 	ofstream auxiliar;
 
@@ -1524,7 +1540,7 @@ void Estudios::borrado_logico_est()
 	lectura.open("Estudios.txt", ios::in);
 	auxiliar.open("auxiliar.txt", ios::out);
 
-	cout << "\t\t\t\t*** Eliminar hoja de vida de forma logica ***\t\t\t\t\n\n";
+	cout << "\t\t\t\t*** Eliminar estudiante de forma logica ***\t\t\t\t\n\n";
 	if (lectura.is_open() && auxiliar.is_open())
 	{
 		fflush(stdin);
@@ -1604,6 +1620,8 @@ void Estudios::borrado_logico_est()
 
 void Estudios::listar_est()
 {
+	system(CLEAR);
+
 	int i = 0;
 	ifstream lectura;
 	ifstream leer_est;
@@ -1731,6 +1749,8 @@ void Estudios::listar_est()
 
 void Estudios::modificar_est()
 {
+	system(CLEAR);
+
 	ifstream lectura;
 	ofstream auxiliar;
 
@@ -1869,6 +1889,8 @@ void Estudios::modificar_est()
 
 void Estudios::retirar_est()
 {
+	system(CLEAR);
+
 	ifstream lectura;
 	ofstream auxiliar;
 
@@ -1880,11 +1902,11 @@ void Estudios::retirar_est()
 	lectura.open("Estudios.txt", ios::in);
 	auxiliar.open("auxiliar.txt", ios::out);
 
-	cout << "\t\t\t\t*** Eliminar una hoja de vida ***\t\t\t\t\n\n";
+	cout << "\t\t\t\t*** Eliminar un registro de estudiante ***\t\t\t\t\n\n";
 	if (lectura.is_open() && auxiliar.is_open())
 	{
 		fflush(stdin);
-		cout << "Ingresa la cedula del registro que deseas dar eliminar: ";
+		cout << "Ingresa la cedula del registro que deseas eliminar: ";
 		getline(cin, auxCodigo);
 
 		getline(lectura, cedula);
@@ -1904,18 +1926,18 @@ void Estudios::retirar_est()
 				cout << "Titulo : " << titulo<< endl;
 				cout << "Fecha de terminacion : " << fechaT << endl;
 
-				cout << endl<<"Realmente deseas dar de baja  (s/n)?: ";
+				cout << endl<<"Realmente deseas dar de baja (s/n)?: ";
 				cin.getline(respuesta, 5);
 
 				if (strcmp(respuesta, "s") == 0 || strcmp(respuesta, "S") == 0 ||
 					strcmp(respuesta, "si") == 0 || strcmp(respuesta, "SI") == 0 ||
 					strcmp(respuesta, "Si") == 0 || strcmp(respuesta, "sI") == 0)
 				{
-					cout << "\n\n\255La hoja de vida se ha eliminado correctamente!\n\n";
+					cout << "\n\n\255Los datos del estudiante se ha eliminado correctamente!\n\n";
 				}
 				else
 				{
-					cout << "\n\n\255Hoja de vida conservada!\n\n";
+					cout << "\n\n\255Datos de estudiantes conservados!\n\n";
 					auxiliar << cedula << endl
 						   << entidadEd << endl
 						   << titulo << endl
@@ -1995,13 +2017,15 @@ void HLaboral::menu_H()
 			opc=0;
 			break;
 		default:
-			cout << "Ingreso Opcion no valida ";
+			cout << "Ha ingresado una opcion no valida ";
 		}
 	} while (opc != 0);
 }
 
 void HLaboral::ingresar_H()
 {
+	system(CLEAR);
+
 	ofstream arIngresar; // estudios
 	ifstream lectura;	 // Datos DBasicos
 
@@ -2164,7 +2188,7 @@ void HLaboral::ingresar_H()
 		}
 		if (encontro == 0)
 		{
-			cout << "\n\n Cedula no existe en el archivo";
+			cout << "\n\n La cedula no existe en el archivo";
 			getch();
 		}
 	}
@@ -2174,6 +2198,8 @@ void HLaboral::ingresar_H()
 
 void HLaboral::activar_logico_H()
 {
+	system(CLEAR);
+
 	ifstream lectura;
 	ofstream auxiliar;
 
@@ -2189,7 +2215,7 @@ void HLaboral::activar_logico_H()
 	if (lectura.is_open() && auxiliar.is_open())
 	{
 		fflush(stdin);
-		cout << "Activando los Registros Inactivados" << endl;
+		cout << "Activando los Registros Inactivos" << endl;
 		getline(lectura, cedula);
 		while (!lectura.eof())
 		{
@@ -2209,7 +2235,7 @@ void HLaboral::activar_logico_H()
 
 			getline(lectura, cedula);
 		}
-		cout << "Fin Proceso de Activando los Registros" << endl;
+		cout << "\255El proceso de activacion de registros ha concluido exitosamente!" << endl;
 	}
 	else
 	{
@@ -2224,6 +2250,8 @@ void HLaboral::activar_logico_H()
 
 void HLaboral::borrado_logico_H()
 {
+	system(CLEAR);
+
 	ifstream lectura;
 	ofstream auxiliar;
 
@@ -2319,6 +2347,8 @@ void HLaboral::borrado_logico_H()
 
 void HLaboral::listar_H()
 {
+	system(CLEAR);
+
 	int i = 0;
 	ifstream lectura;
 	ifstream leer_est;
@@ -2447,6 +2477,8 @@ void HLaboral::listar_H()
 
 void HLaboral::modificar_H()
 {
+	system(CLEAR);
+
 	ifstream lectura;
 	ofstream auxiliar;
 
@@ -2757,7 +2789,8 @@ void pausa()
 
 void error()
 {
-	cout << "No se pudo abrir el archivo de registros, asegurese que el archivo se encuentre en\n";
-	cout << "la misma ubicaci\242n que el programa o que el archivo de texto se llame: \n";
-	cout << "clientes.txt, si el archivo tiene otro nombre2 ren\242mbrelo al ya mencionado\n\n";
+	cout << "Error!";
 }
+
+//Andres Camilo Gonzalez Velasquez - 20201187519
+//Cristian Stiven Perdomo Garcia - 20201188463
